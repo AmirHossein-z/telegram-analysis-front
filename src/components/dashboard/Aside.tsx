@@ -1,5 +1,4 @@
 import { Dispatch, JSX, SetStateAction } from "react";
-import { IconContext } from "react-icons";
 import {
   BiLogOut,
   BiMessageSquareDots,

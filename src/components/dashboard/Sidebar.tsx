@@ -1,8 +1,7 @@
-import { Dispatch, JSX, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, JSX, SetStateAction } from "react";
 import { Aside, Navbar } from ".";
 
 interface IProps {
-  // setContentItem: Dispatch<SetStateAction<DashboardItem>>;
   toggleAside: boolean;
   setToggleAside: Dispatch<SetStateAction<boolean>>;
 }
