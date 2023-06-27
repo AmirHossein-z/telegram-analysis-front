@@ -1,14 +1,18 @@
 import { useEffect, useState } from "react";
 
 const useMediaMatch = (minWidth: number) => {
-  const [media, setMedia] = useState(false);
+  const [media, setMedia] = useState(
+    window.matchMedia(`(min-width:${minWidth}px)`).matches
+  );
 
   const setState = (event: MediaQueryListEvent) => {
+    console.log("event.matches :>> ", event.matches);
     setMedia(event.matches);
   };
 
   useEffect(() => {
     const mediaQuery = window.matchMedia(`(min-width:${minWidth}px)`);
+
     mediaQuery.addEventListener("change", setState);
 
     return () => {
