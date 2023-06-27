@@ -17,12 +17,12 @@ export default {
       //             blue_bright: "#0081A7",
       //         },
       animation: {
-        fadeIn: "fadeIn 1s linear",
+        fadeIn: "fadeIn 200ms linear",
       },
       keyframes: {
         fadeIn: {
-          "0%": { opacity: 0.5 },
-          "100%": { opacity: 1 },
+          "0%": { opacity: 0.5, transform: "scale(0.9,0.9)" },
+          "100%": { opacity: 1, transform: "scale(1,1)" },
         },
       },
     },

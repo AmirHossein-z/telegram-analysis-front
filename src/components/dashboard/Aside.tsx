@@ -6,51 +6,18 @@ import {
   BiStats,
   BiUser,
 } from "react-icons/bi";
-import { Link, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import { getLogOut } from "../../apis";
-import { useApiPrivate } from "../../hooks";
+import { Link } from "react-router-dom";
 
 interface IProps {
   toggleAside: boolean;
   activeStyle: (linkPath: string) => boolean;
+  logout: () => void;
 }
 
-const Aside = ({ toggleAside, activeStyle }: IProps): JSX.Element => {
-  const axiosPrivate = useApiPrivate();
-  const navigate = useNavigate();
-  let activeLinkClass: string = "text-base-100 bg-neutral-content";
+const Aside = ({ toggleAside, activeStyle, logout }: IProps): JSX.Element => {
+  let activeLinkClass: string =
+    "text-base-100 bg-neutral-content animate-fadeIn";
   let defaultLinkClass: string = "text-neutral-content bg-base-100";
-
-  const logout = async () => {
-    const id = toast.loading("در حال خروج");
-    try {
-      const response = await getLogOut(axiosPrivate);
-
-      if (response.data.status == "success") {
-        toast.update(id, {
-          render: response.data?.message,
-          type: "success",
-          isLoading: false,
-          closeOnClick: true,
-          closeButton: true,
-        });
-        navigate("/login");
-      }
-    } catch (error: any) {
-      if (error?.response?.status === 401) {
-        toast.update(id, {
-          render: "شما وارد سامانه نشده اید!",
-          type: "error",
-          isLoading: false,
-          closeOnClick: true,
-          closeButton: true,
-        });
-        navigate("/login");
-      } else {
-      }
-    }
-  };
 
   // mobile aside
   return (

@@ -13,8 +13,8 @@ interface IProps {
 
 const BottomNavigation = ({ activeStyle }: IProps): JSX.Element => {
   const navigate = useNavigate();
-  let activeLinkClass: string = "text-base-100 bg-neutral-content";
-  let defaultLinkClass: string = "text-neutral-content bg-base-100";
+  let activeBtnClass: string = "active animate-fadeIn";
+  let defaultBtnClass: string = "text-neutral-content bg-base-100";
 
   return (
     <>
@@ -22,7 +22,7 @@ const BottomNavigation = ({ activeStyle }: IProps): JSX.Element => {
         <button
           onClick={() => navigate("/dashboard/profile")}
           className={`${
-            activeStyle("/dashboard/profile") ? "active animate-fadeIn" : ""
+            activeStyle("/dashboard/profile") ? activeBtnClass : defaultBtnClass
           }`}
         >
           <BiUser />
@@ -33,7 +33,9 @@ const BottomNavigation = ({ activeStyle }: IProps): JSX.Element => {
         <button
           onClick={() => navigate("/dashboard/channels")}
           className={`${
-            activeStyle("/dashboard/channels") ? "active animate-fadeIn" : ""
+            activeStyle("/dashboard/channels")
+              ? activeBtnClass
+              : defaultBtnClass
           }`}
         >
           <BiMessageSquareDots />
@@ -44,7 +46,7 @@ const BottomNavigation = ({ activeStyle }: IProps): JSX.Element => {
         <button
           onClick={() => navigate("/dashboard/tags")}
           className={`${
-            activeStyle("/dashboard/tags") ? "active animate-fadeIn" : ""
+            activeStyle("/dashboard/tags") ? activeBtnClass : defaultBtnClass
           }`}
         >
           <BiPurchaseTagAlt />
