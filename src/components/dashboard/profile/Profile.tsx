@@ -11,6 +11,7 @@ interface UserInfo {
   email: string;
   updated_at: string;
   created_at: string;
+  phone: string;
 }
 
 const profile = ({}): JSX.Element => {
@@ -23,6 +24,7 @@ const profile = ({}): JSX.Element => {
     email: "",
     id: 0,
     updated_at: "",
+    phone: "",
   });
 
   useEffect(() => {
@@ -60,7 +62,7 @@ const profile = ({}): JSX.Element => {
       <div className="flex flex-col items-center md:flex-row">
         <div className="flex items-center justify-start">
           <div className="px-4 py-2 font-semibold">شماره تلفن:</div>
-          <div className="px-4 py-2">۰۹۱۰۵۰۲۰۴۲۹</div>
+          <div className="px-4 py-2">{userInfo.phone}</div>
         </div>
         <div className="flex items-center justify-start">
           <div className="px-4 py-2 font-semibold">ایمیل:</div>

@@ -8,31 +8,67 @@ import {
 } from "../pages";
 import { Channels, Profile, Statistics, Tags } from "../components/dashboard";
 import { EditProfile } from "../components/dashboard/profile";
+import { Helmet } from "react-helmet-async";
 
 const dashboardSections = [
   {
     path: "/dashboard/profile",
-    element: <Profile />,
+    element: (
+      <>
+        <Helmet>
+          <title>صفحه پروفایل</title>
+        </Helmet>
+        <Profile />
+      </>
+    ),
     errorElement: <div>profile section not found</div>,
   },
   {
     path: "/dashboard/profile/edit",
-    element: <EditProfile />,
+    element: (
+      <>
+        <Helmet>
+          <title>صفحه ویرایش پروفایل</title>
+        </Helmet>
+        <EditProfile />
+      </>
+    ),
     errorElement: <div>edit profile section not found</div>,
   },
   {
     path: "/dashboard/channels",
-    element: <Channels />,
+    element: (
+      <>
+        <Helmet>
+          <title>صفحه کانال ها</title>
+        </Helmet>
+        <Channels />,
+      </>
+    ),
     errorElement: <div>channels section not found</div>,
   },
   {
     path: "/dashboard/tags",
-    element: <Tags />,
+    element: (
+      <>
+        <Helmet>
+          <title>صفحه تگ ها</title>
+        </Helmet>
+        <Tags />,
+      </>
+    ),
     errorElement: <div>tags section not found</div>,
   },
   {
     path: "/dashboard/statistics",
-    element: <Statistics />,
+    element: (
+      <>
+        <Helmet>
+          <title>صفحه آمار</title>
+        </Helmet>
+        <Statistics />,
+      </>
+    ),
     errorElement: <div>statistics section not found</div>,
   },
 ];
@@ -40,17 +76,38 @@ const dashboardSections = [
 const pages = [
   {
     path: "/",
-    element: <MainPage />,
+    element: (
+      <>
+        <Helmet>
+          <title>صفحه اصلی</title>
+        </Helmet>
+        <MainPage />
+      </>
+    ),
     errorElement: <div>main page not found</div>,
   },
   {
     path: "/register",
-    element: <RegisterPage />,
+    element: (
+      <>
+        <Helmet>
+          <title>صفحه ثبت نام</title>
+        </Helmet>
+        <RegisterPage />
+      </>
+    ),
     errorElement: <div>register page not found</div>,
   },
   {
     path: "/login",
-    element: <LoginPage />,
+    element: (
+      <>
+        <Helmet>
+          <title>صفحه ورود</title>
+        </Helmet>
+        <LoginPage />
+      </>
+    ),
     errorElement: <div>login page not found</div>,
   },
   {
@@ -65,7 +122,14 @@ const routes = createBrowserRouter([
   ...pages,
   {
     path: "*",
-    element: <NotFoundPage />,
+    element: (
+      <>
+        <Helmet>
+          <title>صفحه مورد نظر پیدا نشد!</title>
+        </Helmet>
+        <NotFoundPage />
+      </>
+    ),
   },
 ]);
 
