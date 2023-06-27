@@ -1,5 +1,5 @@
-import axios, { AxiosInstance, AxiosResponse } from "axios";
-import { useApiPrivate } from "../hooks";
+import axios, { AxiosInstance } from "axios";
+import { IInputData } from "../types";
 
 const API_URL: string = `http://localhost:8000/api/`;
 
@@ -7,10 +7,11 @@ interface IParams {
   baseURL: string;
 }
 
-interface IUserRequest {
-  email: string;
-  password: string;
-}
+// interface IUserRequest {
+//   email: string;
+//   password: string;
+//   phone?: string;
+// }
 
 const config: IParams = {
   baseURL: API_URL,
@@ -20,11 +21,11 @@ export const axiosPublic = axios.create(config);
 
 export const apiPrivate = axios.create(config);
 
-export const authUser = async (data: IUserRequest) => {
+export const authUser = async (data: IInputData) => {
   return await axiosPublic.post("login", data);
 };
 
-export const createUser = async (data: IUserRequest) => {
+export const createUser = async (data: IInputData) => {
   return await axiosPublic.post("register", data);
 };
 

@@ -9,6 +9,7 @@ import {
 import logo from "../assets/logo.svg";
 import { Link, useNavigate } from "react-router-dom";
 import { RiLockPasswordFill } from "react-icons/ri";
+import { BsTelephoneFill } from "react-icons/bs";
 import bg_tablet from "../assets/bg_tablet.jpg";
 import { createUser } from "../apis";
 import { IErrorResponseReg, IInputData } from "../types";
@@ -19,12 +20,14 @@ const RegisterPage = ({}: IProps): JSX.Element => {
   const [inputData, setInputData] = useState<IInputData>({
     email: "",
     password: "",
+    phone: "",
   });
   const emailRef = useRef<HTMLInputElement | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [errorFetch, setErrorFetch] = useState<IErrorResponseReg>({
     status: false,
-    message: { email: "", password: "" },
+    // message: { email: "", password: "", phone: "" },
+    message: [],
   });
 
   useEffect(() => {
@@ -41,7 +44,7 @@ const RegisterPage = ({}: IProps): JSX.Element => {
       setErrorFetch({
         ...errorFetch,
         status: false,
-        message: { email: "", password: "" },
+        message: [],
       });
       const { status } = await createUser(inputData);
       if (status === 200) {
@@ -67,10 +70,18 @@ const RegisterPage = ({}: IProps): JSX.Element => {
   };
 
   if (errorFetch.status) {
-    for (let [_, message] of Object.entries(errorFetch.message)) {
-      toast.error(message);
+    for (const obj of errorFetch.message) {
+      for (const key in obj) {
+        if (obj.hasOwnProperty(key)) {
+          toast.error(obj[key]);
+        }
+      }
     }
-    setErrorFetch({ status: false, message: { email: "", password: "" } });
+
+    setErrorFetch({
+      status: false,
+      message: [],
+    });
   }
 
   return (
@@ -116,24 +127,57 @@ const RegisterPage = ({}: IProps): JSX.Element => {
                   />
                 </div>
               </div>
-              <div className="relative mb-6">
+
+              <div className="form-control">
+                <label htmlFor="phone" className="label">
+                  <span className="label-text">تلفن</span>
+                </label>
+                <div className="relative mb-6">
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-accent-focus">
+                    <BsTelephoneFill />
+                    {/* <svg
+                      aria-hidden="true"
+                      className="h-5 w-5 text-accent-focus"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+                      <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+                    </svg> */}
+                  </div>
+                  <input
+                    type="text"
+                    id="phone"
+                    name="phone"
+                    value={inputData.phone ?? ""}
+                    onChange={(e) => onChange(e)}
+                    className="input w-full p-2.5 pr-10 text-neutral-content focus:text-accent-focus sm:p-3 sm:pr-12 lg:p-2.5 lg:pr-10"
+                    placeholder="شماره تلفن خود را وارد کنید"
+                  />
+                </div>
+              </div>
+
+              <div className="form-control">
                 <label htmlFor="registerPassword" className="label">
                   <span className="label-text">پسورد</span>
                 </label>
-                <div className="pointer-events-none absolute bottom-4 right-0 flex items-center pr-3 text-accent-focus sm:bottom-4 lg:bottom-4">
-                  <RiLockPasswordFill />
-                </div>
+                <div className="relative mb-6">
+                  <div className="pointer-events-none absolute bottom-4 right-0 flex items-center pr-3 text-accent-focus sm:bottom-4 lg:bottom-4">
+                    <RiLockPasswordFill />
+                  </div>
 
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  value={inputData.password}
-                  onChange={(e) => onChange(e)}
-                  className="input-neutral-content input w-full p-2.5 pr-10 focus:text-accent-focus sm:p-3 sm:pr-12 lg:p-2.5 lg:pr-10"
-                  placeholder="••••••••••••••••••••••••••"
-                  required
-                />
+                  <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    value={inputData.password}
+                    onChange={(e) => onChange(e)}
+                    className="input-neutral-content input w-full p-2.5 pr-10 focus:text-accent-focus sm:p-3 sm:pr-12 lg:p-2.5 lg:pr-10"
+                    placeholder="••••••••••••••••••••••••••"
+                    required
+                  />
+                </div>
               </div>
               <div className="flex justify-center">
                 <button

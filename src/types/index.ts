@@ -1,10 +1,12 @@
 export interface IInputData {
   email: string;
   password: string;
+  phone?: string;
 }
 
 export interface IErrorResponseReg {
-  message: { email: string; password: string };
+  // message: { email: string; password: string; phone?: string };
+  message: { [key: string]: string }[];
   status: boolean;
 }
 
