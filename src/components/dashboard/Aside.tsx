@@ -1,4 +1,4 @@
-import { Dispatch, JSX, SetStateAction } from "react";
+import { JSX } from "react";
 import {
   BiLogOut,
   BiMessageSquareDots,
@@ -6,25 +6,21 @@ import {
   BiStats,
   BiUser,
 } from "react-icons/bi";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getLogOut } from "../../apis";
 import { useApiPrivate } from "../../hooks";
 
 interface IProps {
   toggleAside: boolean;
+  activeStyle: (linkPath: string) => boolean;
 }
 
-const Aside = ({ toggleAside }: IProps): JSX.Element => {
-  const location = useLocation();
+const Aside = ({ toggleAside, activeStyle }: IProps): JSX.Element => {
   const axiosPrivate = useApiPrivate();
   const navigate = useNavigate();
   let activeLinkClass: string = "text-base-100 bg-neutral-content";
   let defaultLinkClass: string = "text-neutral-content bg-base-100";
-
-  const activeStyle = (linkPath: string): boolean => {
-    return location.pathname === linkPath;
-  };
 
   const logout = async () => {
     const id = toast.loading("در حال خروج");
@@ -56,6 +52,7 @@ const Aside = ({ toggleAside }: IProps): JSX.Element => {
     }
   };
 
+  // mobile aside
   return (
     <aside
       id="logo-sidebar"

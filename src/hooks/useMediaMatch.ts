@@ -6,7 +6,6 @@ const useMediaMatch = (minWidth: number) => {
   );
 
   const setState = (event: MediaQueryListEvent) => {
-    console.log("event.matches :>> ", event.matches);
     setMedia(event.matches);
   };
 

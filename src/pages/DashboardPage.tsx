@@ -6,7 +6,7 @@ import { useMediaMatch } from "../hooks";
 
 const DashboardPage = () => {
   const [toggleAside, setToggleAside] = useState<boolean>(false);
-  const [match, setMatch] = useMediaMatch(768);
+  const [match, _] = useMediaMatch(768);
 
   useEffect(() => {
     if (match) {

@@ -57,7 +57,7 @@ const profile = ({}): JSX.Element => {
         <BiUser />
         <span className="text-xl tracking-wide">درباره من</span>
       </div>
-      <div className="flex items-center">
+      <div className="flex flex-col items-center md:flex-row">
         <div className="flex items-center justify-start">
           <div className="px-4 py-2 font-semibold">شماره تلفن:</div>
           <div className="px-4 py-2">۰۹۱۰۵۰۲۰۴۲۹</div>
