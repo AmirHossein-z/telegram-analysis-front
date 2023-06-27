@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import { ProtectedRoute } from "../../containers";
+import { ProtectedRoute } from "../../routes";
 import { JSX } from "react";
 
 interface IProps {
