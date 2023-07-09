@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from "axios";
 import { IInputData } from "../types";
 
-const API_URL: string = `http://localhost:8000/api/`;
+const API_URL = `http://localhost:8000/api/`;
 
 interface IParams {
   baseURL: string;
