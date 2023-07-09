@@ -1,4 +1,4 @@
-import { Dispatch, JSX, SetStateAction } from "react";
+import { Dispatch, JSX, SetStateAction, useContext } from "react";
 import { Aside, Navbar } from ".";
 
 import BottomNavigation from "./BottomNavigation";
@@ -6,6 +6,7 @@ import { useApiPrivate, useMediaMatch } from "../../hooks";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getLogOut } from "../../apis";
+import AuthContext from "../../context/AuthProvider";
 
 interface IProps {
   toggleAside: boolean;
@@ -17,6 +18,7 @@ const Sidebar = ({ toggleAside, setToggleAside }: IProps): JSX.Element => {
   const location = useLocation();
   const axiosPrivate = useApiPrivate();
   const navigate = useNavigate();
+  const { setAuth } = useContext(AuthContext);
 
   const activeStyle = (linkPath: string): boolean => {
     return location.pathname === linkPath;
@@ -28,6 +30,7 @@ const Sidebar = ({ toggleAside, setToggleAside }: IProps): JSX.Element => {
       const response = await getLogOut(axiosPrivate);
 
       if (response.data.status == "success") {
+        setAuth({ accessToken: "" });
         toast.update(id, {
           render: response.data?.message,
           type: "success",
@@ -48,6 +51,7 @@ const Sidebar = ({ toggleAside, setToggleAside }: IProps): JSX.Element => {
         });
         navigate("/login");
       } else {
+        //
       }
     }
   };
