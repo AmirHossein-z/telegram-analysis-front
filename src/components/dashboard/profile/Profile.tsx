@@ -1,9 +1,8 @@
 import { useEffect, JSX, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useApiPrivate } from "../../../hooks";
 import { getProfile } from "../../../apis";
 import { toast } from "react-toastify";
-import { BiUser } from "react-icons/bi";
 import { getRelativeDate } from "../../../utils";
 
 interface UserInfo {
@@ -14,7 +13,7 @@ interface UserInfo {
   phone: string;
 }
 
-const profile = ({}): JSX.Element => {
+const Profile = (): JSX.Element => {
   const axiosPrivate = useApiPrivate();
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
@@ -54,39 +53,34 @@ const profile = ({}): JSX.Element => {
   }
 
   return (
-    <section className="w-full rounded-md bg-primary text-primary-content shadow-sm">
-      <div className="flex items-center gap-2 font-semibold leading-8">
-        <BiUser />
-        <span className="text-xl tracking-wide">درباره من</span>
+    <div className="card-bordered card w-full bg-base-100 shadow-xl">
+      <div className="card-body">
+        <h2 className="card-title mb-6 text-info">درباره من</h2>
+        <div className="flex flex-col gap-6">
+          <p className="flex gap-x-2">
+            <h5 className="">شماره تلفن:</h5>
+            <span>{userInfo.phone}</span>
+          </p>
+          <p className="flex gap-x-2">
+            <h5>ایمیل:</h5>
+            <span>{userInfo.email}</span>
+          </p>
+          <p className="flex gap-x-2">
+            <h5>اخرین تاریخ ویرایش:</h5>
+            <span>{getRelativeDate(new Date(userInfo.updated_at))}</span>
+          </p>
+        </div>
+        <div className="card-actions justify-end">
+          <button
+            onClick={() => navigate("/dashboard/profile/edit")}
+            className="btn-secondary btn-outline btn"
+          >
+            ویرایش
+          </button>
+        </div>
       </div>
-      <div className="flex flex-col items-center md:flex-row">
-        <div className="flex items-center justify-start">
-          <div className="px-4 py-2 font-semibold">شماره تلفن:</div>
-          <div className="px-4 py-2">{userInfo.phone}</div>
-        </div>
-        <div className="flex items-center justify-start">
-          <div className="px-4 py-2 font-semibold">ایمیل:</div>
-          <div className="px-4 py-2">
-            <a className="text-blue-800" href={`mailto:${userInfo.email}`}>
-              {userInfo.email}
-            </a>
-          </div>
-        </div>
-        <div className="flex items-center justify-start">
-          <div className="px-4 py-2 font-semibold">آخرین تاریخ ویرایش:</div>
-          <div className="px-4 py-2">
-            {getRelativeDate(new Date(userInfo.updated_at))}
-          </div>
-        </div>
-      </div>
-      <Link
-        to="/dashboard/profile/edit"
-        className="focus:shadow-outline hover:shadow-xs my-4 block w-full rounded-lg p-3 text-base font-semibold text-warning-content hover:text-warning focus:outline-none"
-      >
-        ویرایش
-      </Link>
-    </section>
+    </div>
   );
 };
 
-export default profile;
+export default Profile;

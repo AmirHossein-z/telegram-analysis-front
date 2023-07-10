@@ -15,15 +15,14 @@ interface IProps {
 }
 
 const Aside = ({ toggleAside, activeStyle, logout }: IProps): JSX.Element => {
-  let activeLinkClass: string =
-    "text-base-100 bg-neutral-content animate-fadeIn";
-  let defaultLinkClass: string = "text-neutral-content bg-base-100";
+  const activeLinkClass = "text-base-100 bg-base-content animate-fadeIn";
+  const defaultLinkClass = "text-base-content bg-base-100";
 
   // mobile aside
   return (
     <aside
       id="logo-sidebar"
-      className={`fixed right-0 top-0 z-40 h-screen w-64 border-l border-primary-content bg-white pt-[73px] transition-all duration-200 ease-linear ${
+      className={`fixed right-0 top-0 z-40 h-screen w-64 border-l border-primary-content bg-base-100 pt-[73px] transition-all duration-200 ease-linear ${
         toggleAside ? "translate-x-0" : "translate-x-full"
       }`}
       aria-label="Sidebar"
@@ -80,9 +79,6 @@ const Aside = ({ toggleAside, activeStyle, logout }: IProps): JSX.Element => {
             >
               <BiStats />
               <span className="mr-3">آمار</span>
-              <span className="badge badge-warning mr-5 flex items-baseline justify-center px-2 text-sm font-medium">
-                4
-              </span>
             </Link>
           </li>
           <li>

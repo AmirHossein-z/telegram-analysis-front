@@ -12,7 +12,7 @@ const Navbar = ({ setToggleAside, logout }: IProps): JSX.Element => {
   const [match, _] = useMediaMatch(768);
 
   return (
-    <nav className="fixed top-0 z-50 w-full border-b border-primary-content bg-base-100">
+    <nav className="fixed top-0 z-50 w-full border-b border-base-content border-opacity-10 bg-base-100">
       <div className="px-3 py-3 lg:px-5 lg:pl-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center justify-start">
@@ -25,7 +25,7 @@ const Navbar = ({ setToggleAside, logout }: IProps): JSX.Element => {
                 onClick={() => {
                   setToggleAside((prevState) => !prevState);
                 }}
-                className="inline-flex items-center rounded-lg p-2 text-sm text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+                className="focus:ring-text-base-100 inline-flex items-center rounded-lg bg-base-100 p-2 text-sm ring-2 focus:outline-none focus:ring-gray-100"
               >
                 <span className="sr-only">Open sidebar</span>
                 <BiMenu />
@@ -38,13 +38,13 @@ const Navbar = ({ setToggleAside, logout }: IProps): JSX.Element => {
                 // className="w-40 h-40 sm:w-44 sm:h-44 lg:40 mx-auto p-2"
                 className="ml-3 h-12 w-12"
               />
-              <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white sm:text-2xl">
+              <span className="self-center whitespace-nowrap text-xl font-semibold text-info sm:text-2xl">
                 telegram analyzer
               </span>
             </a>
           </div>
           {/* logout */}
-          <button onClick={logout}>
+          <button onClick={logout} className="text-error">
             <BiLogOut />
           </button>
         </div>

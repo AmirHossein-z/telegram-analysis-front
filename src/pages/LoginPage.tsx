@@ -97,14 +97,14 @@ const LoginPage = ({}: IProps): JSX.Element => {
   return (
     <main>
       <section className="h-full w-full lg:grid lg:h-full lg:w-full lg:grid-cols-2 lg:items-center lg:justify-center">
-        <section className="h-screen w-screen bg-base-300 lg:h-full lg:w-full">
-          <div className="mx-auto flex flex-col justify-center gap-3 sm:max-w-[36rem] sm:gap-12 lg:max-w-full">
+        <section className="h-screen w-screen overflow-hidden bg-base-100 lg:h-full lg:w-full">
+          <div className="mx-auto my-4 flex flex-col justify-center gap-3 sm:max-w-[36rem] sm:gap-12 lg:max-w-full">
             <img
               src={logo}
               alt="لوگوی سایت"
-              className="lg:40 mx-auto h-40 w-40 p-2 sm:h-44 sm:w-44"
+              className="mx-auto h-40 w-32 p-2 sm:w-40"
             />
-            <h2 className="justify-self-center text-center text-2xl text-accent sm:text-3xl lg:text-2xl">
+            <h2 className="justify-self-center text-center text-2xl text-secondary sm:text-3xl lg:text-2xl">
               ورود به حساب
             </h2>
             <form onSubmit={(e) => onSubmit(e)} className="p-4">
@@ -116,7 +116,7 @@ const LoginPage = ({}: IProps): JSX.Element => {
                   <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
                     <svg
                       aria-hidden="true"
-                      className="h-5 w-5 text-accent-focus"
+                      className="h-5 w-5 text-primary"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                       xmlns="http://www.w3.org/2000/svg"
@@ -132,7 +132,7 @@ const LoginPage = ({}: IProps): JSX.Element => {
                     placeholder="ایمیل خود را وارد کنید"
                     value={inputData.email}
                     onChange={(e) => onChange(e)}
-                    className="input w-full p-2.5 pr-10 text-neutral-content focus:text-accent-focus sm:p-3 sm:pr-12 lg:p-2.5 lg:pr-10"
+                    className="input w-full border border-primary border-opacity-20 p-2.5 pr-10 text-base-100 focus:border-opacity-100 focus:text-base-content focus:outline-none sm:p-3 sm:pr-12 lg:p-2.5 lg:pr-10"
                   />
                 </div>
               </div>
@@ -141,7 +141,7 @@ const LoginPage = ({}: IProps): JSX.Element => {
                   <label htmlFor="loginPassword" className="label">
                     <span className="label-text">پسورد</span>
                   </label>
-                  <div className="pointer-events-none absolute bottom-4 right-0 flex items-center pr-3 text-accent-focus sm:bottom-4 lg:bottom-4">
+                  <div className="pointer-events-none absolute bottom-4 right-0 flex items-center pr-3 text-primary sm:bottom-4 lg:bottom-4">
                     <RiLockPasswordFill />
                   </div>
 
@@ -152,13 +152,13 @@ const LoginPage = ({}: IProps): JSX.Element => {
                     value={inputData.password}
                     onChange={(e) => onChange(e)}
                     placeholder="••••••••••••••••••••••••••"
-                    className="input-neutral-content input w-full p-2.5 pr-10 focus:text-accent-focus sm:p-3 sm:pr-12 lg:p-2.5 lg:pr-10"
+                    className="input-neutral-content input w-full border border-primary border-opacity-20 p-2.5 pr-10 text-base-content focus:border-opacity-100 focus:text-base-content focus:outline-none sm:p-3 sm:pr-12 lg:p-2.5 lg:pr-10"
                   />
                 </div>
               </div>
               <div className="flex justify-center">
                 <button
-                  className={`btn-secondary btn-outline btn-wide btn text-base ${
+                  className={`btn-secondary btn-outline btn-wide btn text-base focus:outline-secondary-focus ${
                     loading ? "btn-disabled" : ""
                   }`}
                 >
@@ -168,10 +168,10 @@ const LoginPage = ({}: IProps): JSX.Element => {
                   ) : null}
                 </button>
               </div>
-              <p className="mt-3 text-center text-neutral-content">
+              <p className="mt-3 text-center text-base-content">
                 حساب نداری؟{" "}
                 <Link to="/register">
-                  <u className="text-warning">ثبت نام کن</u>
+                  <u className="text-primary">ثبت نام کن</u>
                 </Link>
               </p>
             </form>

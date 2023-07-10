@@ -5,7 +5,7 @@ import {
   BiStats,
   BiUser,
 } from "react-icons/bi";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 interface IProps {
   activeStyle: (linkPath: string) => boolean;
@@ -13,8 +13,8 @@ interface IProps {
 
 const BottomNavigation = ({ activeStyle }: IProps): JSX.Element => {
   const navigate = useNavigate();
-  let activeBtnClass: string = "active animate-fadeIn";
-  let defaultBtnClass: string = "text-neutral-content bg-base-100";
+  const activeBtnClass = "active animate-fadeIn";
+  const defaultBtnClass = "text-base-content bg-base-100";
 
   return (
     <>
