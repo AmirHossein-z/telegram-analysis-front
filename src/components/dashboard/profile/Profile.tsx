@@ -57,18 +57,18 @@ const Profile = (): JSX.Element => {
       <div className="card-body">
         <h2 className="card-title mb-6 text-info">درباره من</h2>
         <div className="flex flex-col gap-6">
-          <p className="flex gap-x-2">
+          <div className="flex gap-x-2">
             <h5 className="">شماره تلفن:</h5>
-            <span>{userInfo.phone}</span>
-          </p>
-          <p className="flex gap-x-2">
+            <p>{userInfo.phone}</p>
+          </div>
+          <div className="flex gap-x-2">
             <h5>ایمیل:</h5>
-            <span>{userInfo.email}</span>
-          </p>
-          <p className="flex gap-x-2">
+            <p>{userInfo.email}</p>
+          </div>
+          <div className="flex gap-x-2">
             <h5>اخرین تاریخ ویرایش:</h5>
-            <span>{getRelativeDate(new Date(userInfo.updated_at))}</span>
-          </p>
+            <p>{getRelativeDate(new Date(userInfo.updated_at))}</p>
+          </div>
         </div>
         <div className="card-actions justify-end">
           <button

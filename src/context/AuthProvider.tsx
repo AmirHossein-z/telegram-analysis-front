@@ -2,6 +2,7 @@ import { ReactNode, createContext, useState, JSX, Dispatch } from "react";
 
 interface IAuth {
   accessToken: string;
+  userId: string;
 }
 
 interface IAuthContextValue {
@@ -18,12 +19,12 @@ interface IProps {
 // };
 
 const AuthContext = createContext<IAuthContextValue>({
-  auth: { accessToken: "" },
+  auth: { accessToken: "", userId: "" },
   setAuth: () => {},
 });
 
 export const AuthProvider = ({ children }: IProps): JSX.Element => {
-  const [auth, setAuth] = useState<IAuth>({ accessToken: "" });
+  const [auth, setAuth] = useState<IAuth>({ accessToken: "", userId: "" });
 
   return (
     <AuthContext.Provider value={{ auth, setAuth }}>

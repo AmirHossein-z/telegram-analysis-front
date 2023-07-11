@@ -16,9 +16,7 @@ import { authUser } from "../apis";
 import AuthContext from "../context/AuthProvider";
 import { toast } from "react-toastify";
 
-interface IProps {}
-
-const LoginPage = ({}: IProps): JSX.Element => {
+const LoginPage = (): JSX.Element => {
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/dashboard/profile";
@@ -51,14 +49,12 @@ const LoginPage = ({}: IProps): JSX.Element => {
         status: false,
         message: "",
       });
-      const { data: userData, status } = await authUser(inputData);
-      if (status === 200) {
-        setLoading(false);
-        setInputData({ email: "", password: "" });
-        const accessToken: string = userData.access_token;
-        setAuth({ accessToken: accessToken });
-        navigate(from, { replace: true });
-      }
+      const { data: userData } = await authUser(inputData);
+      setLoading(false);
+      setInputData({ email: "", password: "" });
+      const accessToken = userData?.access_token?.original?.access_token;
+      setAuth({ accessToken: accessToken, userId: userData?.user.id });
+      navigate(from, { replace: true });
     } catch (error: any) {
       setLoading(false);
       if (error?.response?.status === 400 || error?.response?.status === 401) {
@@ -132,7 +128,7 @@ const LoginPage = ({}: IProps): JSX.Element => {
                     placeholder="ایمیل خود را وارد کنید"
                     value={inputData.email}
                     onChange={(e) => onChange(e)}
-                    className="input w-full border border-primary border-opacity-20 p-2.5 pr-10 text-base-100 focus:border-opacity-100 focus:text-base-content focus:outline-none sm:p-3 sm:pr-12 lg:p-2.5 lg:pr-10"
+                    className="input w-full border border-primary border-opacity-20 p-2.5 pr-10 text-base-content focus:border-opacity-100 focus:text-base-content focus:outline-none sm:p-3 sm:pr-12 lg:p-2.5 lg:pr-10"
                   />
                 </div>
               </div>
