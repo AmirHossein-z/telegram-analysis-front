@@ -41,3 +41,10 @@ export const getLogOut = async (axiosPrivate: AxiosInstance) => {
 export const getProfile = async (axiosPrivate: AxiosInstance) => {
   return await axiosPrivate.get("dashboard/profile");
 };
+
+export const getChannels = async (
+  axiosPrivate: AxiosInstance,
+  user_id: number
+) => {
+  return await axiosPrivate.get(`channels/${user_id}`);
+};
