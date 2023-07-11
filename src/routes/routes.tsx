@@ -16,7 +16,7 @@ const dashboardSections = [
     element: (
       <>
         <Helmet>
-          <title>صفحه پروفایل</title>
+          <title>پروفایل</title>
         </Helmet>
         <Profile />
       </>
@@ -28,7 +28,7 @@ const dashboardSections = [
     element: (
       <>
         <Helmet>
-          <title>صفحه ویرایش پروفایل</title>
+          <title>ویرایش پروفایل</title>
         </Helmet>
         <EditProfile />
       </>
@@ -40,7 +40,7 @@ const dashboardSections = [
     element: (
       <>
         <Helmet>
-          <title>صفحه کانال ها</title>
+          <title>کانال ها</title>
         </Helmet>
         <Channels />,
       </>
@@ -52,7 +52,7 @@ const dashboardSections = [
     element: (
       <>
         <Helmet>
-          <title>صفحه تگ ها</title>
+          <title>تگ ها</title>
         </Helmet>
         <Tags />,
       </>
@@ -64,7 +64,7 @@ const dashboardSections = [
     element: (
       <>
         <Helmet>
-          <title>صفحه آمار</title>
+          <title>آمار</title>
         </Helmet>
         <Statistics />,
       </>
@@ -91,7 +91,7 @@ const pages = [
     element: (
       <>
         <Helmet>
-          <title>صفحه ثبت نام</title>
+          <title>ثبت نام</title>
         </Helmet>
         <RegisterPage />
       </>
@@ -103,7 +103,7 @@ const pages = [
     element: (
       <>
         <Helmet>
-          <title>صفحه ورود</title>
+          <title>ورود</title>
         </Helmet>
         <LoginPage />
       </>
