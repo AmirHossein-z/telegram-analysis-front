@@ -51,7 +51,7 @@ const Channels = (): JSX.Element => {
   }
   // has channel
   else if (Channel.status) {
-    return <main>channels</main>;
+    return <section>channels</section>;
   } else {
     return <AddChannel />;
   }
