@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import {
   DashboardPage,
+  ErrorPage,
   LoginPage,
   MainPage,
   NotFoundPage,
@@ -9,6 +10,7 @@ import {
 import { Channels, Profile, Statistics, Tags } from "../components/dashboard";
 import { EditProfile } from "../components/dashboard/profile";
 import { Helmet } from "react-helmet-async";
+import { AddChannel } from "../components/dashboard/channel";
 
 const dashboardSections = [
   {
@@ -21,7 +23,7 @@ const dashboardSections = [
         <Profile />
       </>
     ),
-    errorElement: <div>profile section not found</div>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "/dashboard/profile/edit",
@@ -33,7 +35,7 @@ const dashboardSections = [
         <EditProfile />
       </>
     ),
-    errorElement: <div>edit profile section not found</div>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "/dashboard/channels",
@@ -42,10 +44,22 @@ const dashboardSections = [
         <Helmet>
           <title>کانال ها</title>
         </Helmet>
-        <Channels />,
+        <Channels />
       </>
     ),
-    errorElement: <div>channels section not found</div>,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/dashboard/add_channel",
+    element: (
+      <>
+        <Helmet>
+          <title>افزودن کانال</title>
+        </Helmet>
+        <AddChannel />
+      </>
+    ),
+    errorElement: <ErrorPage />,
   },
   {
     path: "/dashboard/tags",
@@ -57,7 +71,7 @@ const dashboardSections = [
         <Tags />,
       </>
     ),
-    errorElement: <div>tags section not found</div>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "/dashboard/statistics",
@@ -69,7 +83,7 @@ const dashboardSections = [
         <Statistics />,
       </>
     ),
-    errorElement: <div>statistics section not found</div>,
+    errorElement: <ErrorPage />,
   },
 ];
 
@@ -84,7 +98,7 @@ const pages = [
         <MainPage />
       </>
     ),
-    errorElement: <div>main page not found</div>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "/register",
@@ -96,7 +110,7 @@ const pages = [
         <RegisterPage />
       </>
     ),
-    errorElement: <div>register page not found</div>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "/login",
@@ -108,12 +122,12 @@ const pages = [
         <LoginPage />
       </>
     ),
-    errorElement: <div>login page not found</div>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "/dashboard",
     element: <DashboardPage />,
-    errorElement: <div>dashboard page not found</div>,
+    errorElement: <ErrorPage />,
     children: [...dashboardSections],
   },
 ];

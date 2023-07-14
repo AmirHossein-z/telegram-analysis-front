@@ -5,26 +5,29 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AuthProvider } from "./context/AuthProvider.tsx";
 import { HelmetProvider } from "react-helmet-async";
+import ErrorBoundary from "./components/ErrorBoundary.tsx";
 
 const App = (): JSX.Element => {
   return (
-    <AuthProvider>
-      <HelmetProvider>
-        <RouterProvider router={routes} />
-        <ToastContainer
-          position="top-center"
-          autoClose={4000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="dark"
-        />
-      </HelmetProvider>
-    </AuthProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <HelmetProvider>
+          <RouterProvider router={routes} />
+          <ToastContainer
+            position="top-center"
+            autoClose={4000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="dark"
+          />
+        </HelmetProvider>
+      </AuthProvider>
+    </ErrorBoundary>
   );
 };
 
