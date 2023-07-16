@@ -1,10 +1,10 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, JSX } from "react";
 
 interface IManualChannelProps {
   setStep: Dispatch<SetStateAction<number>>;
 }
 
-const ManualChannel = ({ setStep }: IManualChannelProps) => {
+const ManualChannel = ({ setStep }: IManualChannelProps): JSX.Element => {
   return (
     <section className="flex flex-col">
       <div className="flex flex-col justify-start gap-5">

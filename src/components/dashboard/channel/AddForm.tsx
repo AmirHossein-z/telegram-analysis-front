@@ -3,35 +3,91 @@ import {
   Dispatch,
   FormEvent,
   SetStateAction,
+  useContext,
   useState,
 } from "react";
 import { RiLockPasswordFill } from "react-icons/ri";
+import { IChannelData } from "../../../types";
+import { updateApiInfo } from "../../../apis";
+import { useApiPrivate } from "../../../hooks";
+import AuthContext from "../../../context/AuthProvider";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 interface IAddFormProps {
   step: number;
   setStep: Dispatch<SetStateAction<number>>;
 }
 
-interface IChannelData {
-  apiId: string;
-  apiHash: string;
+interface IErrorResponseAddChannel {
+  status: boolean;
+  message: { [key: string]: string }[];
 }
 
 const AddForm = ({ step, setStep }: IAddFormProps): JSX.Element => {
-  const [loading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errorFetch, setErrorFetch] = useState<IErrorResponseAddChannel>({
+    status: false,
+    message: [],
+  });
   const [inputData, setInputData] = useState<IChannelData>({
     apiId: "",
     apiHash: "",
   });
+  const axiosPrivate = useApiPrivate();
+  const navigate = useNavigate();
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setInputData({ ...inputData, [e.target.name]: e.target.value });
+    setInputData({
+      ...inputData,
+      [e.target.name]: e.target.value,
+    });
   };
 
-  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(e);
+    try {
+      setLoading(true);
+      setErrorFetch({
+        ...errorFetch,
+        status: false,
+        message: [],
+      });
+      const { data } = await updateApiInfo(axiosPrivate, inputData);
+      setLoading(false);
+      setInputData({ apiHash: "", apiId: "" });
+      setStep(3);
+      toast.success("اطلاعات با موفقیت ثبت شد!");
+    } catch (error: any) {
+      setLoading(false);
+      if (error?.response?.status === 400) {
+        setErrorFetch({
+          ...errorFetch,
+          status: true,
+          message: error.response.data.message ?? "",
+        });
+      }
+      if (error?.response?.status === 401) {
+        navigate("login");
+      }
+    }
   };
+
+  if (errorFetch.status) {
+    for (const obj of errorFetch.message) {
+      for (const key in obj) {
+        if (obj.hasOwnProperty(key)) {
+          toast.error(obj[key]);
+        }
+      }
+    }
+
+    setErrorFetch({
+      message: [],
+      status: false,
+    });
+  }
+
   return (
     <section>
       <form onSubmit={(e) => onSubmit(e)} className="p-4">

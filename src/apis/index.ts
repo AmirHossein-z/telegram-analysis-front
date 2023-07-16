@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from "axios";
-import { IInputData } from "../types";
+import { IChannelData, IInputData } from "../types";
 
 const API_URL = `http://localhost:8000/api/`;
 
@@ -47,4 +47,43 @@ export const getChannels = async (
   user_id: number
 ) => {
   return await axiosPrivate.get(`channels/${user_id}`);
+};
+
+export const updateApiInfo = async (
+  axiosPrivate: AxiosInstance,
+  data: IChannelData
+) => {
+  return await axiosPrivate.post("dashboard/add_api_info", data);
+};
+
+export const PhoneValidation = async (axiosPrivate: AxiosInstance) => {
+  return await axiosPrivate.get("dashboard/login_telegram", {
+    // increase timeout because of filtering of telegram in Iran
+    timeout: 10000,
+  });
+};
+
+export const postOtp = async (
+  axiosPrivate: AxiosInstance,
+  data: { otp: string }
+) => {
+  return await axiosPrivate.post("dashboard/otp_validation", data, {
+    // increase timeout because of filtering of telegram in Iran
+    timeout: 10000,
+  });
+};
+
+export const getAllUserChannelsHas = async (axiosPrivate: AxiosInstance) => {
+  return await axiosPrivate.get("dashboard/get_all_channels", {
+    // increase timeout because of filtering of telegram in Iran
+    // 10 seconds
+    timeout: 10000,
+  });
+};
+
+export const setChannel = async (
+  axiosPrivate: AxiosInstance,
+  data: { channelId: string }
+) => {
+  return await axiosPrivate.post("dashboard/set_channel", data);
 };

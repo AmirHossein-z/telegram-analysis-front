@@ -14,3 +14,8 @@ export interface IErrorResponseLogin {
   message: string;
   status: boolean;
 }
+
+export interface IChannelData {
+  apiId: string;
+  apiHash: string;
+}

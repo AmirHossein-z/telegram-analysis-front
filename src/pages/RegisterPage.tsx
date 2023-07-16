@@ -15,8 +15,7 @@ import { createUser } from "../apis";
 import { IErrorResponseReg, IInputData } from "../types";
 import { toast } from "react-toastify";
 
-interface IProps {}
-const RegisterPage = ({}: IProps): JSX.Element => {
+const RegisterPage = (): JSX.Element => {
   const [inputData, setInputData] = useState<IInputData>({
     email: "",
     password: "",

@@ -10,9 +10,12 @@ const Step = ({ step, setStep }: IStepProps) => {
   };
 
   return (
-    <ul className="steps mx-auto w-full" style={{ direction: "ltr" }}>
-      <li data-content="4" className={`${setStyle(4)}`}>
+    <ol className="steps mx-auto w-full" style={{ direction: "ltr" }}>
+      <li data-content="5" className={`${setStyle(5)}`}>
         اتمام فرایند
+      </li>
+      <li data-content="4" className={`${setStyle(4)}`}>
+        انتخاب کانال
       </li>
       <li data-content="3" className={`${setStyle(3)}`}>
         ارسال کد
@@ -23,7 +26,7 @@ const Step = ({ step, setStep }: IStepProps) => {
       <li data-content="1" className={`${setStyle(1)}`}>
         هشدار
       </li>
-    </ul>
+    </ol>
   );
 };
 

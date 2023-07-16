@@ -30,7 +30,7 @@ const Sidebar = ({ toggleAside, setToggleAside }: IProps): JSX.Element => {
       const response = await getLogOut(axiosPrivate);
 
       if (response.data.status == "success") {
-        setAuth({ accessToken: "" });
+        setAuth({ accessToken: "", userId: "" });
         toast.update(id, {
           render: response.data?.message,
           type: "success",

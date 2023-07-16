@@ -9,7 +9,7 @@ interface IProps {
 }
 
 const Navbar = ({ setToggleAside, logout }: IProps): JSX.Element => {
-  const [match, _] = useMediaMatch(768);
+  const [match] = useMediaMatch(768);
 
   return (
     <nav className="fixed top-0 z-50 w-full border-b border-base-content border-opacity-10 bg-base-100">
@@ -44,7 +44,8 @@ const Navbar = ({ setToggleAside, logout }: IProps): JSX.Element => {
             </a>
           </div>
           {/* logout */}
-          <button onClick={logout} className="text-error">
+          <button onClick={logout} className="flex gap-3 text-error">
+            خروج
             <BiLogOut />
           </button>
         </div>

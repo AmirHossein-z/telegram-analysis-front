@@ -2,7 +2,7 @@ import { JSX, useContext, useEffect, useState } from "react";
 import { useApiPrivate } from "../../../hooks";
 import { getChannels } from "../../../apis";
 import AuthContext from "../../../context/AuthProvider";
-import AddChannel from "./AddChannel";
+import { Navigate } from "react-router-dom";
 
 interface IChannel {
   status: boolean;
@@ -53,7 +53,7 @@ const Channels = (): JSX.Element => {
   else if (Channel.status) {
     return <section>channels</section>;
   } else {
-    return <AddChannel />;
+    return <Navigate to={"/dashboard/add_channel"} />;
   }
 };
 

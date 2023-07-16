@@ -1,7 +1,7 @@
 import { JSX } from "react";
 import { useNavigate } from "react-router-dom";
 
-const NotFoundPage = ({}): JSX.Element => {
+const NotFoundPage = (): JSX.Element => {
   const navigate = useNavigate();
 
   return (
