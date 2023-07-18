@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from "axios";
+import axios, { AxiosInstance, CancelToken } from "axios";
 import { IChannelData, IInputData } from "../types";
 
 const API_URL = `http://localhost:8000/api/`;
@@ -19,6 +19,7 @@ const config: IParams = {
 
 export const axiosPublic = axios.create(config);
 
+// use for requests to protected routes
 export const apiPrivate = axios.create(config);
 
 export const authUser = async (data: IInputData) => {
@@ -73,11 +74,17 @@ export const postOtp = async (
   });
 };
 
-export const getAllUserChannelsHas = async (axiosPrivate: AxiosInstance) => {
+export const getAllUserChannelsHas = async (
+  axiosPrivate: AxiosInstance,
+  cancelToken?: CancelToken
+  // cancelToken?: CancelTokenSource
+) => {
   return await axiosPrivate.get("dashboard/get_all_channels", {
     // increase timeout because of filtering of telegram in Iran
     // 10 seconds
     timeout: 10000,
+    // cancelToken: cancelToken?.token,
+    cancelToken: cancelToken,
   });
 };
 
@@ -85,5 +92,7 @@ export const setChannel = async (
   axiosPrivate: AxiosInstance,
   data: { channelId: string }
 ) => {
-  return await axiosPrivate.post("dashboard/set_channel", data);
+  return await axiosPrivate.post("dashboard/set_channel", data, {
+    timeout: 500000,
+  });
 };

@@ -8,9 +8,8 @@ import SelectChannel from "./SelectChannel";
 import { toast } from "react-toastify";
 
 const AddChannel = (): JSX.Element => {
-  const [step, setStep] = useState(4);
+  const [step, setStep] = useState(1);
 
-  // show how can get api_id and api_hash from telegram
   let content: JSX.Element = <></>;
   if (step === 1) {
     toast.warn("شما در حال حاضر کانالی ندارید!");

@@ -7,9 +7,10 @@ import {
   useState,
 } from "react";
 import { getAllUserChannelsHas, setChannel } from "../../../apis";
-import { useApiPrivate } from "../../../hooks";
+import { useApiPrivate, useCancelToken } from "../../../hooks";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 interface IchannelInfo {
   id: number;
@@ -25,12 +26,12 @@ const SelectChannel = ({ setStep }: IProps) => {
   const navigate = useNavigate();
   const [channels, setChannels] = useState<IchannelInfo[]>([]);
   const [selectChannel, setSelectChannel] = useState({ channelId: "" });
+  const { cancelToken, cancel } = useCancelToken();
 
   const getAllChannels = async () => {
     try {
       setLoading(true);
-      const { data } = await getAllUserChannelsHas(axiosPrivate);
-      console.log("data :>> ", data);
+      const { data } = await getAllUserChannelsHas(axiosPrivate, cancelToken);
       setChannels(data?.value);
       setLoading(false);
     } catch (error: any) {
@@ -43,9 +44,6 @@ const SelectChannel = ({ setStep }: IProps) => {
       }
     }
   };
-  useEffect(() => {
-    getAllChannels();
-  }, []);
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -53,10 +51,9 @@ const SelectChannel = ({ setStep }: IProps) => {
     try {
       setLoading(true);
       const { data } = await setChannel(axiosPrivate, selectChannel);
-      console.log("data setChannel :>> ", data);
       setLoading(false);
-      // setStep(5);
-      // toast.success("اطلاعات کانال با موفقیت ثبت شد");
+      setStep(5);
+      toast.success("اطلاعات کانال با موفقیت ثبت شد");
     } catch (error: any) {
       setLoading(false);
       if (error?.response?.status === 400 || error?.response?.status === 401) {
@@ -76,18 +73,19 @@ const SelectChannel = ({ setStep }: IProps) => {
     return (
       <div className="flex w-full flex-col items-center justify-center gap-5">
         <span className="loading loading-dots loading-lg"></span>
-        <p>لطفا قندشکن خود را روشن نگه دارید!</p>
+        <p>لطفا قندشکن خود را روشن نگه دارید و صبور باشید!</p>
       </div>
     );
   } else if (channels.length === 0) {
     return (
-      <button type="button" onClick={getAllChannels}>
-        تلاش دوباره
-      </button>
+      <div className="flex flex-col items-center justify-center gap-2">
+        <button type="button" onClick={getAllChannels}>
+          تلاش دوباره
+        </button>
+        <p>لطفا از روشن بودن قندشکن خود اطمینان حاصل کنید</p>
+      </div>
     );
   }
-
-  console.log("channels :>> ", channels);
 
   return (
     <>

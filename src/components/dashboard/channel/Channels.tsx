@@ -24,7 +24,7 @@ interface IChannel {
 const Channels = (): JSX.Element => {
   const axiosPrivate = useApiPrivate();
   const [loading, setLoading] = useState(true);
-  const [Channel, setChannel] = useState<IChannel>({
+  const [channel, setChannel] = useState<IChannel>({
     status: false,
     value: [],
   });
@@ -46,12 +46,13 @@ const Channels = (): JSX.Element => {
     fetchChannels();
   }, []);
 
+  console.log("channels :>> ", channel);
   if (loading) {
     return <p className="loading loading-spinner loading-lg"></p>;
   }
   // has channel
-  else if (Channel.status) {
-    return <section>channels</section>;
+  else if (channel.status) {
+    return <section>list of channels</section>;
   } else {
     return <Navigate to={"/dashboard/add_channel"} />;
   }
