@@ -8,7 +8,7 @@ import SelectChannel from "./SelectChannel";
 import { toast } from "react-toastify";
 
 const AddChannel = (): JSX.Element => {
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(4);
 
   let content: JSX.Element = <></>;
   if (step === 1) {

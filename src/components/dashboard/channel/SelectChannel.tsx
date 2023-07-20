@@ -10,7 +10,6 @@ import { getAllUserChannelsHas, setChannel } from "../../../apis";
 import { useApiPrivate, useCancelToken } from "../../../hooks";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 
 interface IchannelInfo {
   id: number;
@@ -26,7 +25,7 @@ const SelectChannel = ({ setStep }: IProps) => {
   const navigate = useNavigate();
   const [channels, setChannels] = useState<IchannelInfo[]>([]);
   const [selectChannel, setSelectChannel] = useState({ channelId: "" });
-  const { cancelToken, cancel } = useCancelToken();
+  const { cancelToken } = useCancelToken();
 
   const getAllChannels = async () => {
     try {
@@ -45,12 +44,24 @@ const SelectChannel = ({ setStep }: IProps) => {
     }
   };
 
+  useEffect(() => {
+    getAllChannels();
+    return () => {
+      setLoading(false);
+    };
+  }, []);
+
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
       setLoading(true);
-      const { data } = await setChannel(axiosPrivate, selectChannel);
+      const { data } = await setChannel(
+        axiosPrivate,
+        selectChannel,
+        cancelToken
+      );
+      console.log("data :>> ", data);
       setLoading(false);
       setStep(5);
       toast.success("اطلاعات کانال با موفقیت ثبت شد");
@@ -79,8 +90,12 @@ const SelectChannel = ({ setStep }: IProps) => {
   } else if (channels.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center gap-2">
-        <button type="button" onClick={getAllChannels}>
-          تلاش دوباره
+        <button
+          type="button"
+          onClick={getAllChannels}
+          className="btn-accent btn"
+        >
+          تلاش دوباره برای گفتن اطلاعات کانال ها
         </button>
         <p>لطفا از روشن بودن قندشکن خود اطمینان حاصل کنید</p>
       </div>

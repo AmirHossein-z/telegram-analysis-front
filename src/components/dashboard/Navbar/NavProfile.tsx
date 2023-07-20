@@ -1,7 +1,7 @@
 import { JSX, useState } from "react";
 import profileImg from "../../../assets/profile.png";
 
-const NavProfile = ({}): JSX.Element => {
+const NavProfile = (): JSX.Element => {
   const [dropdown, setDropdown] = useState<boolean>(false);
 
   return (

@@ -7,12 +7,30 @@ import {
   NotFoundPage,
   RegisterPage,
 } from "../pages";
-import { Channels, Profile, Statistics, Tags } from "../components/dashboard";
+import {
+  Channels,
+  Default,
+  Profile,
+  Statistics,
+  Tags,
+} from "../components/dashboard";
 import { EditProfile } from "../components/dashboard/profile";
 import { Helmet } from "react-helmet-async";
-import { AddChannel } from "../components/dashboard/channel";
+import { AddChannel, ViewChannel } from "../components/dashboard/channel";
 
 const dashboardSections = [
+  {
+    path: "/dashboard",
+    element: (
+      <>
+        <Helmet>
+          <title>صفحه اصلی داشبورد</title>
+        </Helmet>
+        <Default />
+      </>
+    ),
+    errorElement: <ErrorPage />,
+  },
   {
     path: "/dashboard/profile",
     element: (
@@ -45,6 +63,18 @@ const dashboardSections = [
           <title>کانال ها</title>
         </Helmet>
         <Channels />
+      </>
+    ),
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/dashboard/channels/:channelId",
+    element: (
+      <>
+        <Helmet>
+          <title>اطلاعات کانال</title>
+        </Helmet>
+        <ViewChannel />
       </>
     ),
     errorElement: <ErrorPage />,

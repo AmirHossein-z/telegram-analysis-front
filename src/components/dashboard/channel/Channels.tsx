@@ -1,41 +1,40 @@
 import { JSX, useContext, useEffect, useState } from "react";
-import { useApiPrivate } from "../../../hooks";
+import { useApiPrivate, useCancelToken } from "../../../hooks";
 import { getChannels } from "../../../apis";
 import AuthContext from "../../../context/AuthProvider";
-import { Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 
 interface IChannel {
-  status: boolean;
-  value?: {
-    id: number;
-    name: string;
-    description: string;
-    channel_telegram_id: string;
-    members_count: number;
-    view: number;
-    share: number;
-    tags: string;
-    user_id: number;
-    created_at: string;
-    updated_at: string;
-  }[];
+  id: number;
+  name: string;
+  description: string;
+  channel_telegram_id: string;
+  members_count: number;
+  view: number;
+  share: number;
+  tags: string;
+  user_id: number;
+  created_at: string;
+  updated_at: string;
 }
 
 const Channels = (): JSX.Element => {
   const axiosPrivate = useApiPrivate();
   const [loading, setLoading] = useState(true);
-  const [channel, setChannel] = useState<IChannel>({
-    status: false,
-    value: [],
-  });
+  const [channels, setChannels] = useState<IChannel[]>([]);
   const { auth } = useContext(AuthContext);
+  const { cancelToken } = useCancelToken();
 
   useEffect(() => {
     const fetchChannels = async () => {
       try {
         setLoading(true);
-        const { data } = await getChannels(axiosPrivate, parseInt(auth.userId));
-        setChannel({ status: data?.status, value: data?.value });
+        const { data } = await getChannels(
+          axiosPrivate,
+          parseInt(auth.userId),
+          cancelToken
+        );
+        setChannels([...data.value]);
         setLoading(false);
       } catch (err) {
         console.log(err);
@@ -44,18 +43,91 @@ const Channels = (): JSX.Element => {
     };
 
     fetchChannels();
+
+    return () => {
+      setLoading(false);
+    };
   }, []);
 
-  console.log("channels :>> ", channel);
+  console.log("channels :>> ", channels);
   if (loading) {
     return <p className="loading loading-spinner loading-lg"></p>;
   }
-  // has channel
-  else if (channel.status) {
-    return <section>list of channels</section>;
+  // has channels
+  else if (channels.length > 0) {
+    return (
+      <>
+        <section className="flex flex-wrap items-center justify-center gap-2">
+          <select
+            className="select-bordered select-info select"
+            name="selectChannel"
+            style={{ direction: "rtl" }}
+            defaultValue="0"
+          >
+            <option value="0" disabled>
+              فیلتر بر اساس ...
+            </option>
+            <option value="filter_1">
+              فیلتر بر اساس بیشترین بازدید در تمام پست ها
+            </option>
+            <option value="filter_2">
+              فیلتر بر اساس کمترین بازدید در تمام پست ها
+            </option>
+            <option value="filter_3">
+              فیلتر بر اساس بیشترین اشتراک گذاری در تمام پست ها
+            </option>
+            <option value="filter_4">
+              فیلتر بر اساس کمترین اشتراک گذاری در تمام پست ها
+            </option>
+          </select>
+          <input
+            type="text"
+            placeholder="جست و جو"
+            className="input-bordered input-info input w-full max-w-xs"
+          />
+        </section>
+        <ChannelList channels={channels} />
+      </>
+    );
   } else {
     return <Navigate to={"/dashboard/add_channel"} />;
   }
+};
+
+interface IChannelListProps {
+  channels: IChannel[];
+}
+
+const ChannelList = ({ channels = [] }: IChannelListProps) => {
+  return (
+    <div className="overflow-x-auto">
+      <table className="table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>id</th>
+            <th>نام کانال</th>
+            <th>آیدی تلگرام</th>
+          </tr>
+        </thead>
+        <tbody>
+          {channels?.map((channel) => (
+            <tr key={channel.id}>
+              <th>1</th>
+              <td>{channel.id}</td>
+              <td>{channel.name}</td>
+              <td>{channel.channel_telegram_id ?? ""}</td>
+              <td>
+                <Link to={`${channel.id}`} className="link-primary link">
+                  مشاهده پست های کانال
+                </Link>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 };
 
 export default Channels;

@@ -32,6 +32,7 @@ export const createUser = async (data: IInputData) => {
 
 export const getRefreshAccessToken = async () => {
   const response = await axiosPublic.get("refresh");
+  console.log("response :>> ", response);
   return response?.data?.accessToken;
 };
 
@@ -39,60 +40,76 @@ export const getLogOut = async (axiosPrivate: AxiosInstance) => {
   return await axiosPrivate.get("dashboard/logout");
 };
 
-export const getProfile = async (axiosPrivate: AxiosInstance) => {
-  return await axiosPrivate.get("dashboard/profile");
+export const getProfile = async (
+  axiosPrivate: AxiosInstance,
+  cancelToken?: CancelToken
+) => {
+  return await axiosPrivate.get("dashboard/profile", {
+    cancelToken: cancelToken,
+  });
 };
 
 export const getChannels = async (
   axiosPrivate: AxiosInstance,
-  user_id: number
+  user_id: number,
+  cancelToken?: CancelToken
 ) => {
-  return await axiosPrivate.get(`channels/${user_id}`);
+  return await axiosPrivate.get(`channels/${user_id}`, {
+    cancelToken: cancelToken,
+  });
 };
 
 export const updateApiInfo = async (
   axiosPrivate: AxiosInstance,
-  data: IChannelData
+  data: IChannelData,
+  cancelToken?: CancelToken
 ) => {
-  return await axiosPrivate.post("dashboard/add_api_info", data);
+  return await axiosPrivate.post("dashboard/add_api_info", data, {
+    cancelToken: cancelToken,
+  });
 };
 
-export const PhoneValidation = async (axiosPrivate: AxiosInstance) => {
+export const PhoneValidation = async (
+  axiosPrivate: AxiosInstance,
+  cancelToken?: CancelToken
+) => {
   return await axiosPrivate.get("dashboard/login_telegram", {
     // increase timeout because of filtering of telegram in Iran
-    timeout: 10000,
+    timeout: 500000,
+    cancelToken: cancelToken,
   });
 };
 
 export const postOtp = async (
   axiosPrivate: AxiosInstance,
-  data: { otp: string }
+  data: { otp: string },
+  cancelToken?: CancelToken
 ) => {
   return await axiosPrivate.post("dashboard/otp_validation", data, {
     // increase timeout because of filtering of telegram in Iran
-    timeout: 10000,
+    timeout: 500000,
+    cancelToken: cancelToken,
   });
 };
 
 export const getAllUserChannelsHas = async (
   axiosPrivate: AxiosInstance,
   cancelToken?: CancelToken
-  // cancelToken?: CancelTokenSource
 ) => {
   return await axiosPrivate.get("dashboard/get_all_channels", {
     // increase timeout because of filtering of telegram in Iran
-    // 10 seconds
-    timeout: 10000,
-    // cancelToken: cancelToken?.token,
+    timeout: 500000,
     cancelToken: cancelToken,
   });
 };
 
 export const setChannel = async (
   axiosPrivate: AxiosInstance,
-  data: { channelId: string }
+  data: { channelId: string },
+  cancelToken?: CancelToken
 ) => {
   return await axiosPrivate.post("dashboard/set_channel", data, {
     timeout: 500000,
+    cancelToken: cancelToken,
   });
 };

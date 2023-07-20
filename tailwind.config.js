@@ -25,6 +25,9 @@ export default {
           "100%": { opacity: 1, transform: "scale(1,1)" },
         },
       },
+      boxShadow: {
+        bg: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
+      },
     },
   },
   daisyui: {

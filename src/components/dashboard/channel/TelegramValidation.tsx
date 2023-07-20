@@ -8,7 +8,7 @@ import {
 } from "react";
 import OTPInput from "react-otp-input";
 import { PhoneValidation, postOtp } from "../../../apis";
-import { useApiPrivate } from "../../../hooks";
+import { useApiPrivate, useCancelToken } from "../../../hooks";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -32,20 +32,19 @@ const TelegramValidation = ({
     status: false,
     message: [],
   });
+  const { cancelToken } = useCancelToken();
 
   useEffect(() => {
     const getPhoneValidation = async () => {
       try {
         setLoading(true);
-        console.log('otp :>> ', otp);
-        const { data } = await PhoneValidation(axiosPrivate);
+        console.log("otp :>> ", otp);
+        const { data } = await PhoneValidation(axiosPrivate, cancelToken);
         console.log("data :>> ", data);
-        if (!data.status) {
-          toast.warn(data.value);
-          setStep(2);
-        } else {
-          // console.log("data :>> ", data);
-        }
+        // if (!data.status) {
+        //   toast.warn(data.value);
+        //   setStep(2);
+        // }
         setLoading(false);
         // setErrorFetch({
         //   ...errorFetch,
@@ -71,6 +70,9 @@ const TelegramValidation = ({
       }
     };
     getPhoneValidation();
+    return () => {
+      setLoading(false);
+    };
   }, []);
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -82,7 +84,7 @@ const TelegramValidation = ({
         status: false,
         message: [],
       });
-      const { data } = await postOtp(axiosPrivate, { otp: otp });
+      const { data } = await postOtp(axiosPrivate, { otp: otp }, cancelToken);
       setLoading(false);
       setStep(4);
       toast.success("ورود انجام شد");
@@ -116,6 +118,9 @@ const TelegramValidation = ({
       status: false,
     });
   }
+  if (loading) {
+    return <div className="loading loading-dots loading-lg"></div>;
+  }
 
   return (
     <form
@@ -131,13 +136,13 @@ const TelegramValidation = ({
         numInputs={5}
         shouldAutoFocus
         containerStyle={
-          "flex flex-row-reverse justify-center items-center gap-3"
+          "flex flex-row-reverse flex-wrap justify-center items-center gap-3"
         }
         renderSeparator={<span>-</span>}
         renderInput={(props) => (
           <input
             {...props}
-            style={{ width: "5%" }}
+            style={{ width: "35px" }}
             className="input border border-primary border-opacity-30 text-center text-base-content focus:border-opacity-100 focus:text-base-content focus:outline-none sm:p-3 lg:p-2.5"
           />
         )}
@@ -148,9 +153,6 @@ const TelegramValidation = ({
       >
         ثبت
       </button>
-      {loading ? (
-        <span className="loading loading-dots loading-lg"></span>
-      ) : null}
     </form>
   );
 };

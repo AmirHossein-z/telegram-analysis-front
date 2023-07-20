@@ -6,6 +6,7 @@ import {
   BiStats,
   BiUser,
 } from "react-icons/bi";
+import { AiOutlineDashboard } from "react-icons/ai";
 import { Link } from "react-router-dom";
 
 interface IProps {
@@ -22,13 +23,24 @@ const Aside = ({ toggleAside, activeStyle, logout }: IProps): JSX.Element => {
   return (
     <aside
       id="logo-sidebar"
-      className={`fixed right-0 top-0 z-40 h-screen w-64 border-l border-primary-content bg-base-100 pt-[73px] transition-all duration-200 ease-linear ${
+      className={`fixed right-0 top-0 z-40 h-screen w-64 border-l border-primary-content border-opacity-20 bg-base-100 pt-[73px] shadow-bg transition-all duration-200 ease-linear ${
         toggleAside ? "translate-x-0" : "translate-x-full"
       }`}
       aria-label="Sidebar"
     >
       <div className="h-full overflow-y-auto bg-base-100 px-3 py-4">
         <ul className="space-y-2 font-medium">
+          <li>
+            <Link
+              to={"/dashboard"}
+              className={`${
+                activeStyle("/dashboard") ? activeLinkClass : defaultLinkClass
+              } flex items-center rounded-lg p-2 transition-all duration-75 ease-in`}
+            >
+              <AiOutlineDashboard />
+              <span className="mr-3">صفحه اصلی</span>
+            </Link>
+          </li>
           <li>
             <Link
               to={"/dashboard/profile"}

@@ -1,6 +1,7 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { ProtectedRoute } from "../../routes";
 import { JSX } from "react";
+import BreadCrumbs from "./BreadCrumb";
 
 interface IProps {
   toggleAside: boolean;
@@ -15,6 +16,7 @@ const Content = ({ toggleAside }: IProps): JSX.Element => {
         }`}
       >
         <div className="mt-14 p-4">
+          <BreadCrumbs />
           <Outlet />
         </div>
       </main>

@@ -17,7 +17,7 @@ const DashboardPage = () => {
   }, []);
 
   return (
-    <IconContext.Provider value={{ size: "1.5rem" }}>
+    <IconContext.Provider value={{ size: "20px" }}>
       <Sidebar setToggleAside={setToggleAside} toggleAside={toggleAside} />
       <Content toggleAside={toggleAside} />
     </IconContext.Provider>

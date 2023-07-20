@@ -5,6 +5,7 @@ import {
   BiStats,
   BiUser,
 } from "react-icons/bi";
+import { AiOutlineDashboard } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 
 interface IProps {
@@ -18,7 +19,18 @@ const BottomNavigation = ({ activeStyle }: IProps): JSX.Element => {
 
   return (
     <>
-      <div className="btm-nav">
+      <div className="btm-nav border-t border-primary-content border-opacity-20 shadow-bg">
+        <button
+          onClick={() => navigate("/dashboard")}
+          className={`${
+            activeStyle("/dashboard") ? activeBtnClass : defaultBtnClass
+          }`}
+        >
+          <AiOutlineDashboard />
+          <span className={`btm-nav-label transition-all duration-200 ease-in`}>
+            صفحه اصلی
+          </span>
+        </button>
         <button
           onClick={() => navigate("/dashboard/profile")}
           className={`${
