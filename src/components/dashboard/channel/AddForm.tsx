@@ -3,17 +3,15 @@ import {
   Dispatch,
   FormEvent,
   SetStateAction,
-  useContext,
   useEffect,
   useState,
 } from "react";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { IChannelData } from "../../../types";
 import { getProfile, updateApiInfo } from "../../../apis";
-import { useApiPrivate, useCancelToken } from "../../../hooks";
-import AuthContext from "../../../context/AuthProvider";
+import { useAbortController, useApiPrivate } from "../../../hooks";
 import { toast } from "react-toastify";
-import { resolvePath, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 interface IAddFormProps {
   step: number;
@@ -37,11 +35,11 @@ const AddForm = ({ step, setStep }: IAddFormProps): JSX.Element => {
   });
   const axiosPrivate = useApiPrivate();
   const navigate = useNavigate();
-  const { cancelToken, cancel } = useCancelToken();
+  const { controller } = useAbortController();
 
   useEffect(() => {
     const getUserInfo = async () => {
-      const { data } = await getProfile(axiosPrivate, cancelToken);
+      const { data } = await getProfile(axiosPrivate, controller);
       if (data?.api_id && data?.api_hash) {
         setStep(3);
       }
@@ -70,11 +68,7 @@ const AddForm = ({ step, setStep }: IAddFormProps): JSX.Element => {
         status: false,
         message: [],
       });
-      const { data } = await updateApiInfo(
-        axiosPrivate,
-        inputData,
-        cancelToken
-      );
+      const { data } = await updateApiInfo(axiosPrivate, inputData, controller);
       setLoading(false);
       setInputData({ apiHash: "", apiId: "" });
       setStep(3);

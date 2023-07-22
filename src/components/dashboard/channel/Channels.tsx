@@ -1,5 +1,5 @@
 import { JSX, useContext, useEffect, useState } from "react";
-import { useApiPrivate, useCancelToken } from "../../../hooks";
+import { useAbortController, useApiPrivate } from "../../../hooks";
 import { getChannels } from "../../../apis";
 import AuthContext from "../../../context/AuthProvider";
 import { Link, Navigate } from "react-router-dom";
@@ -23,7 +23,7 @@ const Channels = (): JSX.Element => {
   const [loading, setLoading] = useState(true);
   const [channels, setChannels] = useState<IChannel[]>([]);
   const { auth } = useContext(AuthContext);
-  const { cancelToken } = useCancelToken();
+  const { controller } = useAbortController();
 
   useEffect(() => {
     const fetchChannels = async () => {
@@ -32,7 +32,7 @@ const Channels = (): JSX.Element => {
         const { data } = await getChannels(
           axiosPrivate,
           parseInt(auth.userId),
-          cancelToken
+          controller
         );
         setChannels([...data.value]);
         setLoading(false);

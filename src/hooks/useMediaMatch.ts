@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
 
+/**
+ * custom hook for listening to media query base on minWidth provided
+ * @param minWidth
+ * @returns
+ */
 const useMediaMatch = (minWidth: number) => {
   const [media, setMedia] = useState(
     window.matchMedia(`(min-width:${minWidth}px)`).matches

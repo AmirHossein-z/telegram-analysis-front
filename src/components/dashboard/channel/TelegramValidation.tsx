@@ -8,7 +8,7 @@ import {
 } from "react";
 import OTPInput from "react-otp-input";
 import { PhoneValidation, postOtp } from "../../../apis";
-import { useApiPrivate, useCancelToken } from "../../../hooks";
+import { useAbortController, useApiPrivate } from "../../../hooks";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -32,14 +32,14 @@ const TelegramValidation = ({
     status: false,
     message: [],
   });
-  const { cancelToken } = useCancelToken();
+  const { controller } = useAbortController();
 
   useEffect(() => {
     const getPhoneValidation = async () => {
       try {
         setLoading(true);
         console.log("otp :>> ", otp);
-        const { data } = await PhoneValidation(axiosPrivate, cancelToken);
+        const { data } = await PhoneValidation(axiosPrivate, controller);
         console.log("data :>> ", data);
         // if (!data.status) {
         //   toast.warn(data.value);
@@ -84,7 +84,7 @@ const TelegramValidation = ({
         status: false,
         message: [],
       });
-      const { data } = await postOtp(axiosPrivate, { otp: otp }, cancelToken);
+      const { data } = await postOtp(axiosPrivate, { otp: otp }, controller);
       setLoading(false);
       setStep(4);
       toast.success("ورود انجام شد");

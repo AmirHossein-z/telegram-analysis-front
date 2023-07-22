@@ -1,6 +1,6 @@
 import { useEffect, JSX, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useApiPrivate, useCancelToken } from "../../../hooks";
+import { useAbortController, useApiPrivate } from "../../../hooks";
 import { getProfile } from "../../../apis";
 import { toast } from "react-toastify";
 import { getRelativeDate } from "../../../utils";
@@ -25,13 +25,13 @@ const Profile = (): JSX.Element => {
     updated_at: "",
     phone: "",
   });
-  const { cancelToken } = useCancelToken();
+  const { controller } = useAbortController();
 
   useEffect(() => {
     const fetchInfo = async () => {
       try {
         setLoading(true);
-        const response = await getProfile(axiosPrivate, cancelToken);
+        const response = await getProfile(axiosPrivate, controller);
         setUserInfo(response.data);
         setLoading(false);
       } catch (error: any) {

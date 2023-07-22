@@ -1,6 +1,10 @@
 import { Link, useLocation } from "react-router-dom";
 import { JSX } from "react";
 
+/**
+ * map english term to persian term for showing to user
+ * @enum {string}
+ */
 const mapToPersian: { [key: string]: string } = {
   dashboard: "داشبورد",
   profile: "پروفایل",

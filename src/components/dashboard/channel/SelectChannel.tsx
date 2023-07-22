@@ -7,7 +7,7 @@ import {
   useState,
 } from "react";
 import { getAllUserChannelsHas, setChannel } from "../../../apis";
-import { useApiPrivate, useCancelToken } from "../../../hooks";
+import { useAbortController, useApiPrivate } from "../../../hooks";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -25,12 +25,12 @@ const SelectChannel = ({ setStep }: IProps) => {
   const navigate = useNavigate();
   const [channels, setChannels] = useState<IchannelInfo[]>([]);
   const [selectChannel, setSelectChannel] = useState({ channelId: "" });
-  const { cancelToken } = useCancelToken();
+  const { controller } = useAbortController();
 
   const getAllChannels = async () => {
     try {
       setLoading(true);
-      const { data } = await getAllUserChannelsHas(axiosPrivate, cancelToken);
+      const { data } = await getAllUserChannelsHas(axiosPrivate, controller);
       setChannels(data?.value);
       setLoading(false);
     } catch (error: any) {
@@ -59,7 +59,7 @@ const SelectChannel = ({ setStep }: IProps) => {
       const { data } = await setChannel(
         axiosPrivate,
         selectChannel,
-        cancelToken
+        controller
       );
       console.log("data :>> ", data);
       setLoading(false);

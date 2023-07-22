@@ -15,7 +15,6 @@ import { IInputData, IErrorResponseLogin } from "../types";
 import { authUser } from "../apis";
 import AuthContext from "../context/AuthProvider";
 import { toast } from "react-toastify";
-import { useCancelToken } from "../hooks";
 
 const LoginPage = (): JSX.Element => {
   const navigate = useNavigate();
