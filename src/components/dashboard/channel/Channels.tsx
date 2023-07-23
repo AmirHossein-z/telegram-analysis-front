@@ -2,7 +2,8 @@ import { JSX, useContext, useEffect, useState } from "react";
 import { useAbortController, useApiPrivate } from "../../../hooks";
 import { getChannels } from "../../../apis";
 import AuthContext from "../../../context/AuthProvider";
-import { Link, Navigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
+import { CardDesktop, CardMobile, FilterInput, SearchButton } from "../../ui";
 
 interface IChannel {
   id: number;
@@ -23,7 +24,7 @@ const Channels = (): JSX.Element => {
   const [loading, setLoading] = useState(true);
   const [channels, setChannels] = useState<IChannel[]>([]);
   const { auth } = useContext(AuthContext);
-  const { controller } = useAbortController();
+  const { controller, setSignal } = useAbortController(false);
 
   useEffect(() => {
     const fetchChannels = async () => {
@@ -46,10 +47,10 @@ const Channels = (): JSX.Element => {
 
     return () => {
       setLoading(false);
+      setSignal(true);
     };
   }, []);
 
-  console.log("channels :>> ", channels);
   if (loading) {
     return <p className="loading loading-spinner loading-lg"></p>;
   }
@@ -57,34 +58,9 @@ const Channels = (): JSX.Element => {
   else if (channels.length > 0) {
     return (
       <>
-        <section className="flex flex-wrap items-center justify-center gap-2">
-          <select
-            className="select-bordered select-info select"
-            name="selectChannel"
-            style={{ direction: "rtl" }}
-            defaultValue="0"
-          >
-            <option value="0" disabled>
-              فیلتر بر اساس ...
-            </option>
-            <option value="filter_1">
-              فیلتر بر اساس بیشترین بازدید در تمام پست ها
-            </option>
-            <option value="filter_2">
-              فیلتر بر اساس کمترین بازدید در تمام پست ها
-            </option>
-            <option value="filter_3">
-              فیلتر بر اساس بیشترین اشتراک گذاری در تمام پست ها
-            </option>
-            <option value="filter_4">
-              فیلتر بر اساس کمترین اشتراک گذاری در تمام پست ها
-            </option>
-          </select>
-          <input
-            type="text"
-            placeholder="جست و جو"
-            className="input-bordered input-info input w-full max-w-xs"
-          />
+        <section className="flex w-full flex-wrap gap-4">
+          <FilterInput />
+          <SearchButton />
         </section>
         <ChannelList channels={channels} />
       </>
@@ -98,35 +74,37 @@ interface IChannelListProps {
   channels: IChannel[];
 }
 
-const ChannelList = ({ channels = [] }: IChannelListProps) => {
+const ChannelList = ({ channels }: IChannelListProps): JSX.Element => {
   return (
-    <div className="overflow-x-auto">
-      <table className="table">
-        <thead>
-          <tr>
-            <th></th>
-            <th>id</th>
-            <th>نام کانال</th>
-            <th>آیدی تلگرام</th>
-          </tr>
-        </thead>
-        <tbody>
-          {channels?.map((channel) => (
-            <tr key={channel.id}>
-              <th>1</th>
-              <td>{channel.id}</td>
-              <td>{channel.name}</td>
-              <td>{channel.channel_telegram_id ?? ""}</td>
-              <td>
-                <Link to={`${channel.id}`} className="link-primary link">
-                  مشاهده پست های کانال
-                </Link>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <>
+      {/* mobile & tablet */}
+      <section className="mt-2 items-center justify-center gap-3 md:hidden">
+        {channels?.map((channel) => (
+          <CardMobile
+            key={channel.id}
+            name={channel.name}
+            channelTelegramId={channel.channel_telegram_id}
+            view={channel.view}
+            share={channel.share}
+            tags={channel.tags}
+          />
+        ))}
+      </section>
+
+      {/* desktop */}
+      <section className="mt-2 hidden md:grid md:grid-cols-2 md:items-center md:justify-center md:gap-3">
+        {channels?.map((channel) => (
+          <CardDesktop
+            key={channel.id}
+            name={channel.name}
+            channelTelegramId={channel.channel_telegram_id}
+            view={channel.view}
+            share={channel.share}
+            tags={channel.tags}
+          />
+        ))}
+      </section>
+    </>
   );
 };
 

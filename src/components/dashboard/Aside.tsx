@@ -81,19 +81,6 @@ const Aside = ({ toggleAside, activeStyle, logout }: IProps): JSX.Element => {
             </Link>
           </li>
           <li>
-            <Link
-              to={"/dashboard/statistics"}
-              className={`${
-                activeStyle("/dashboard/statistics")
-                  ? activeLinkClass
-                  : defaultLinkClass
-              } flex items-center rounded-lg p-2 transition-all duration-75 ease-in`}
-            >
-              <BiStats />
-              <span className="mr-3">آمار</span>
-            </Link>
-          </li>
-          <li>
             <button
               type="button"
               onClick={logout}

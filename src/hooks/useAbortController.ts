@@ -1,14 +1,18 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-const useAbortController = () => {
+const useAbortController = (signalState: boolean) => {
+  const [signal, setSignal] = useState(signalState);
+
   const controller = new AbortController();
   useEffect(() => {
     return () => {
-      controller.abort();
+      if (signal) {
+        controller.abort();
+      }
     };
   }, []);
 
-  return { controller };
+  return { controller, setSignal };
 };
 
 export default useAbortController;

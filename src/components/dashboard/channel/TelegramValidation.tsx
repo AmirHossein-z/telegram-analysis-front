@@ -32,7 +32,7 @@ const TelegramValidation = ({
     status: false,
     message: [],
   });
-  const { controller } = useAbortController();
+  const { controller, setSignal } = useAbortController(false);
 
   useEffect(() => {
     const getPhoneValidation = async () => {
@@ -72,6 +72,7 @@ const TelegramValidation = ({
     getPhoneValidation();
     return () => {
       setLoading(false);
+      setSignal(true);
     };
   }, []);
 

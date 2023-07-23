@@ -14,7 +14,7 @@ const Navbar = ({ setToggleAside, logout }: IProps): JSX.Element => {
   return (
     <nav className="fixed top-0 z-50 w-full border-b border-base-content border-opacity-10 bg-base-100">
       <div className="px-3 py-3 lg:px-5 lg:pl-3">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-5">
           <div className="flex items-center justify-start">
             {match ? (
               <button
@@ -38,14 +38,14 @@ const Navbar = ({ setToggleAside, logout }: IProps): JSX.Element => {
                 // className="w-40 h-40 sm:w-44 sm:h-44 lg:40 mx-auto p-2"
                 className="ml-3 h-12 w-12"
               />
-              <span className="self-center whitespace-nowrap text-xl font-semibold text-info sm:text-2xl">
+              <span className="self-center whitespace-nowrap text-sm font-semibold text-info sm:text-base">
                 telegram analyzer
               </span>
             </a>
           </div>
           {/* logout */}
           <button onClick={logout} className="flex gap-3 text-error">
-            خروج
+            <span className="hidden sm:block">خروج</span>
             <BiLogOut />
           </button>
         </div>

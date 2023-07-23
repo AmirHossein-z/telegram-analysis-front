@@ -7,12 +7,6 @@ interface IParams {
   baseURL: string;
 }
 
-// interface IUserRequest {
-//   email: string;
-//   password: string;
-//   phone?: string;
-// }
-
 const config: IParams = {
   baseURL: API_URL,
 };
@@ -63,6 +57,12 @@ export const getLogOut = async (axiosPrivate: AxiosInstance) => {
   return await axiosPrivate.get("dashboard/logout");
 };
 
+/**
+ * get user info
+ * @param axiosPrivate
+ * @param controller
+ * @returns
+ */
 export const getProfile = async (
   axiosPrivate: AxiosInstance,
   controller: AbortController
@@ -72,6 +72,13 @@ export const getProfile = async (
   });
 };
 
+/**
+ * get all channels belonged to specific user
+ * @param axiosPrivate
+ * @param user_id
+ * @param controller
+ * @returns
+ */
 export const getChannels = async (
   axiosPrivate: AxiosInstance,
   user_id: number,
@@ -82,6 +89,13 @@ export const getChannels = async (
   });
 };
 
+/**
+ * add api_id and api_hash info for user
+ * @param axiosPrivate
+ * @param data
+ * @param controller
+ * @returns
+ */
 export const updateApiInfo = async (
   axiosPrivate: AxiosInstance,
   data: IChannelData,
@@ -92,6 +106,12 @@ export const updateApiInfo = async (
   });
 };
 
+/**
+ * login to telegram to get phone validation from telegram
+ * @param axiosPrivate
+ * @param controller
+ * @returns
+ */
 export const PhoneValidation = async (
   axiosPrivate: AxiosInstance,
   controller: AbortController
@@ -103,6 +123,13 @@ export const PhoneValidation = async (
   });
 };
 
+/**
+ * send otp code to telegram for validation
+ * @param axiosPrivate
+ * @param data
+ * @param controller
+ * @returns
+ */
 export const postOtp = async (
   axiosPrivate: AxiosInstance,
   data: { otp: string },
@@ -115,6 +142,12 @@ export const postOtp = async (
   });
 };
 
+/**
+ * get all channels & groups & super_groups user has
+ * @param axiosPrivate
+ * @param controller
+ * @returns
+ */
 export const getAllUserChannelsHas = async (
   axiosPrivate: AxiosInstance,
   controller: AbortController
@@ -126,6 +159,13 @@ export const getAllUserChannelsHas = async (
   });
 };
 
+/**
+ * send desired channel id to for saving its posts
+ * @param axiosPrivate
+ * @param data
+ * @param controller
+ * @returns
+ */
 export const setChannel = async (
   axiosPrivate: AxiosInstance,
   data: { channelId: string },

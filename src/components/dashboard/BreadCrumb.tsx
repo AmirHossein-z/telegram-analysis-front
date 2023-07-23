@@ -10,7 +10,6 @@ const mapToPersian: { [key: string]: string } = {
   profile: "پروفایل",
   channels: "کانال ها",
   tags: "تگ ها",
-  statistics: "آمار",
   edit: "ویرایش",
   add_channel: "افزودن کانال",
 };
@@ -33,7 +32,10 @@ const BreadCrumbs = (): JSX.Element => {
     });
 
   return (
-    <section className="breadcrumbs text-sm" style={{ direction: "ltr" }}>
+    <section
+      className="breadcrumbs mb-4 text-sm sm:text-base"
+      style={{ direction: "ltr" }}
+    >
       <ul>{crumbs}</ul>
     </section>
   );

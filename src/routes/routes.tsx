@@ -7,14 +7,8 @@ import {
   NotFoundPage,
   RegisterPage,
 } from "../pages";
-import {
-  Channels,
-  Default,
-  Profile,
-  Statistics,
-  Tags,
-} from "../components/dashboard";
-import { EditProfile } from "../components/dashboard/profile";
+import { Channels, Default, Profile, Tags } from "../components/dashboard";
+import { EditProfile, ResetPassword } from "../components/dashboard/profile";
 import { Helmet } from "react-helmet-async";
 import { AddChannel, ViewChannel } from "../components/dashboard/channel";
 
@@ -51,6 +45,18 @@ const dashboardSections = [
           <title>ویرایش پروفایل</title>
         </Helmet>
         <EditProfile />
+      </>
+    ),
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/dashboard/profile/reset-password",
+    element: (
+      <>
+        <Helmet>
+          <title>تغییر رمز عبور</title>
+        </Helmet>
+        <ResetPassword />
       </>
     ),
     errorElement: <ErrorPage />,
@@ -99,18 +105,6 @@ const dashboardSections = [
           <title>تگ ها</title>
         </Helmet>
         <Tags />,
-      </>
-    ),
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/dashboard/statistics",
-    element: (
-      <>
-        <Helmet>
-          <title>آمار</title>
-        </Helmet>
-        <Statistics />,
       </>
     ),
     errorElement: <ErrorPage />,

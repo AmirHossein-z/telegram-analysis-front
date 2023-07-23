@@ -8,6 +8,7 @@ interface IProps {
 }
 
 const Content = ({ toggleAside }: IProps): JSX.Element => {
+  const location = useLocation();
   return (
     <ProtectedRoute>
       <main
@@ -15,10 +16,10 @@ const Content = ({ toggleAside }: IProps): JSX.Element => {
           toggleAside ? "transition-all duration-200 ease-in-out md:mr-64" : ""
         }`}
       >
-        <div className="mt-14 p-4">
+        <section className="mx-auto mt-14 w-full p-4 sm:max-w-lg md:max-w-2xl lg:max-w-3xl">
           <BreadCrumbs />
           <Outlet />
-        </div>
+        </section>
       </main>
     </ProtectedRoute>
   );

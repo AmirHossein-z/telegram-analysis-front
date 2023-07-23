@@ -2,10 +2,11 @@ export interface IInputData {
   email: string;
   password: string;
   phone?: string;
+  name?: string;
 }
 
 export interface IErrorResponseReg {
-  // message: { email: string; password: string; phone?: string };
+  // message: { email: string; password: string; phone?: string ,name:string};
   message: { [key: string]: string }[];
   status: boolean;
 }
@@ -18,4 +19,12 @@ export interface IErrorResponseLogin {
 export interface IChannelData {
   apiId: string;
   apiHash: string;
+}
+
+export interface ICardProps {
+  name: string;
+  channelTelegramId: string;
+  view: number;
+  share: number;
+  tags: string;
 }

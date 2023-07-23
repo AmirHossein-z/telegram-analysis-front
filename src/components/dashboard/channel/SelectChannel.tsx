@@ -25,7 +25,7 @@ const SelectChannel = ({ setStep }: IProps) => {
   const navigate = useNavigate();
   const [channels, setChannels] = useState<IchannelInfo[]>([]);
   const [selectChannel, setSelectChannel] = useState({ channelId: "" });
-  const { controller } = useAbortController();
+  const { controller, setSignal } = useAbortController(false);
 
   const getAllChannels = async () => {
     try {
@@ -48,6 +48,7 @@ const SelectChannel = ({ setStep }: IProps) => {
     getAllChannels();
     return () => {
       setLoading(false);
+      setSignal(true);
     };
   }, []);
 

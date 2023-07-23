@@ -20,6 +20,7 @@ const RegisterPage = (): JSX.Element => {
     email: "",
     password: "",
     phone: "",
+    name: "",
   });
   const emailRef = useRef<HTMLInputElement | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -97,6 +98,34 @@ const RegisterPage = (): JSX.Element => {
               ثبت نام
             </h2>
             <form onSubmit={onSubmit} className="p-4">
+              <div className="form-control">
+                <label htmlFor="name" className="label">
+                  <span className="label-text">نام</span>
+                </label>
+                <div className="relative mb-6">
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                    <svg
+                      aria-hidden="true"
+                      className="h-5 w-5 text-primary"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+                      <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+                    </svg>
+                  </div>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={inputData.name}
+                    onChange={(e) => onChange(e)}
+                    className="input w-full border border-primary border-opacity-20 p-2.5 pr-10 text-base-content focus:border-opacity-100 focus:text-base-content focus:outline-none sm:p-3 sm:pr-12 lg:p-2.5 lg:pr-10"
+                    placeholder="ایمیل خود را وارد کنید"
+                  />
+                </div>
+              </div>
               <div className="form-control">
                 <label htmlFor="email" className="label">
                   <span className="label-text">ایمیل</span>

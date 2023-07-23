@@ -19,7 +19,7 @@ import { toast } from "react-toastify";
 const LoginPage = (): JSX.Element => {
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || "/dashboard/profile";
+  const from = location.state?.from?.pathname || "/dashboard";
   const { setAuth } = useContext(AuthContext);
 
   const [inputData, setInputData] = useState<IInputData>({

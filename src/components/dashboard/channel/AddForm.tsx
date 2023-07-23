@@ -35,7 +35,7 @@ const AddForm = ({ step, setStep }: IAddFormProps): JSX.Element => {
   });
   const axiosPrivate = useApiPrivate();
   const navigate = useNavigate();
-  const { controller } = useAbortController();
+  const { controller, setSignal } = useAbortController(false);
 
   useEffect(() => {
     const getUserInfo = async () => {
@@ -49,6 +49,7 @@ const AddForm = ({ step, setStep }: IAddFormProps): JSX.Element => {
 
     return () => {
       setLoading(false);
+      setSignal(true);
     };
   }, []);
 
