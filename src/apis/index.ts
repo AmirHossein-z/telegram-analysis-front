@@ -82,10 +82,10 @@ export const getProfile = async (
 export const getChannels = async (
   axiosPrivate: AxiosInstance,
   user_id: number,
-  controller: AbortController
+  controller?: AbortController
 ) => {
   return await axiosPrivate.get(`channels/${user_id}`, {
-    signal: controller.signal,
+    signal: controller?.signal,
   });
 };
 
@@ -175,4 +175,28 @@ export const setChannel = async (
     timeout: 500000,
     signal: controller.signal,
   });
+};
+
+export const getChannel = async (
+  axiosPrivate: AxiosInstance,
+  channelId: string,
+  controller: AbortController
+) => {
+  return await axiosPrivate.get(`dashboard/channel/${channelId}`, {
+    signal: controller.signal,
+  });
+};
+
+export const getPosts = async (
+  axiosPrivate: AxiosInstance,
+  channelId: string,
+  page = 1,
+  controller: AbortController
+) => {
+  return await axiosPrivate.get(
+    `/api/dashboard/channel/${channelId}/posts?page=${page}`,
+    {
+      signal: controller.signal,
+    }
+  );
 };

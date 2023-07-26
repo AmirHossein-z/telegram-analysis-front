@@ -20,7 +20,7 @@ interface UserInfo {
 
 const Profile = (): JSX.Element => {
   const axiosPrivate = useApiPrivate();
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
   const [userInfo, setUserInfo] = useState<UserInfo>({

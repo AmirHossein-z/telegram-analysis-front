@@ -38,9 +38,10 @@ const TelegramValidation = ({
     const getPhoneValidation = async () => {
       try {
         setLoading(true);
-        console.log("otp :>> ", otp);
         const { data } = await PhoneValidation(axiosPrivate, controller);
-        console.log("data :>> ", data);
+        if (!data?.status) {
+          setStep(4);
+        }
         // if (!data.status) {
         //   toast.warn(data.value);
         //   setStep(2);

@@ -62,7 +62,6 @@ const SelectChannel = ({ setStep }: IProps) => {
         selectChannel,
         controller
       );
-      console.log("data :>> ", data);
       setLoading(false);
       setStep(5);
       toast.success("اطلاعات کانال با موفقیت ثبت شد");

@@ -3,7 +3,7 @@ import { JSX } from "react";
 const FilterInput = (): JSX.Element => {
   return (
     <select
-      className="select w-full cursor-pointer bg-secondary bg-opacity-20 !py-0.5 text-xs text-secondary-focus focus:outline-none"
+      className="select w-full cursor-pointer bg-secondary bg-opacity-20 !py-0.5 text-xs text-secondary-focus focus:outline-none md:text-sm"
       name="selectChannel"
       style={{ direction: "rtl" }}
       defaultValue="0"

@@ -2,21 +2,12 @@ import { JSX, useContext, useEffect, useState } from "react";
 import { useAbortController, useApiPrivate } from "../../../hooks";
 import { getChannels } from "../../../apis";
 import AuthContext from "../../../context/AuthProvider";
-import { Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { CardDesktop, CardMobile, FilterInput, SearchButton } from "../../ui";
+import { IChannel } from "../../../types";
 
-interface IChannel {
-  id: number;
-  name: string;
-  description: string;
-  channel_telegram_id: string;
-  members_count: number;
-  view: number;
-  share: number;
-  tags: string;
-  user_id: number;
-  created_at: string;
-  updated_at: string;
+interface IChannelListProps {
+  channels: IChannel[];
 }
 
 const Channels = (): JSX.Element => {
@@ -58,11 +49,17 @@ const Channels = (): JSX.Element => {
   else if (channels.length > 0) {
     return (
       <>
-        <section className="flex w-full flex-wrap gap-4">
+        <section className="mb-5 flex w-full flex-wrap gap-4">
           <FilterInput />
           <SearchButton />
         </section>
         <ChannelList channels={channels} />
+        <Link
+          to={"/dashboard/add_channel"}
+          className="btn-warning btn fixed bottom-[5rem] left-2 md:bottom-4 md:left-4"
+        >
+          افزودن کانال
+        </Link>
       </>
     );
   } else {
@@ -70,18 +67,15 @@ const Channels = (): JSX.Element => {
   }
 };
 
-interface IChannelListProps {
-  channels: IChannel[];
-}
-
 const ChannelList = ({ channels }: IChannelListProps): JSX.Element => {
   return (
     <>
       {/* mobile & tablet */}
-      <section className="mt-2 items-center justify-center gap-3 md:hidden">
+      <section className="mb-40 grid grid-cols-1 items-start justify-center gap-5 md:hidden">
         {channels?.map((channel) => (
           <CardMobile
             key={channel.id}
+            id={channel.id}
             name={channel.name}
             channelTelegramId={channel.channel_telegram_id}
             view={channel.view}
@@ -92,10 +86,11 @@ const ChannelList = ({ channels }: IChannelListProps): JSX.Element => {
       </section>
 
       {/* desktop */}
-      <section className="mt-2 hidden md:grid md:grid-cols-2 md:items-center md:justify-center md:gap-3">
+      <section className="hidden md:grid md:grid-cols-2 md:items-center md:justify-center md:gap-3">
         {channels?.map((channel) => (
           <CardDesktop
             key={channel.id}
+            id={channel.id}
             name={channel.name}
             channelTelegramId={channel.channel_telegram_id}
             view={channel.view}

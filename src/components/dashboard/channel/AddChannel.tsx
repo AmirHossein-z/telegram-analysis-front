@@ -12,7 +12,7 @@ const AddChannel = (): JSX.Element => {
 
   let content: JSX.Element = <></>;
   if (step === 1) {
-    toast.warn("شما در حال حاضر کانالی ندارید!");
+    // toast.warn("شما در حال حاضر کانالی ندارید!");
     content = <ManualChannel setStep={setStep} />;
   } else if (step === 2) {
     content = <AddForm step={step} setStep={setStep} />;

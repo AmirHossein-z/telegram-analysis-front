@@ -1,14 +1,14 @@
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import { ProtectedRoute } from "../../routes";
 import { JSX } from "react";
-import BreadCrumbs from "./BreadCrumb";
+// import BreadCrumbs from "../ui/BreadCrumb";
+import { BreadCrumbs } from "../ui";
 
 interface IProps {
   toggleAside: boolean;
 }
 
 const Content = ({ toggleAside }: IProps): JSX.Element => {
-  const location = useLocation();
   return (
     <ProtectedRoute>
       <main

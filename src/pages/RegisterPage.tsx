@@ -23,7 +23,7 @@ const RegisterPage = (): JSX.Element => {
     name: "",
   });
   const emailRef = useRef<HTMLInputElement | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
   const [errorFetch, setErrorFetch] = useState<IErrorResponseReg>({
     status: false,
     // message: { email: "", password: "", phone: "" },
