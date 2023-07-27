@@ -194,7 +194,7 @@ export const getPosts = async (
   controller: AbortController
 ) => {
   return await axiosPrivate.get(
-    `/api/dashboard/channel/${channelId}/posts?page=${page}`,
+    `dashboard/channel/${channelId}/posts?page=${page}`,
     {
       signal: controller.signal,
     }

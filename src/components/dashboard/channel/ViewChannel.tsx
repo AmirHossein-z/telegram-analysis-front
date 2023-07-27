@@ -1,20 +1,31 @@
-import { Children, JSX, ReactNode, useEffect, useState } from "react";
+import { JSX, ReactNode, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getChannel, getPosts } from "../../../apis";
+import { getChannel } from "../../../apis";
 import { useAbortController, useApiPrivate } from "../../../hooks";
 import { IChannel } from "../../../types";
 import { AiFillEye } from "react-icons/ai";
 import { BsFillShareFill } from "react-icons/bs";
 import { FaUserAlt } from "react-icons/fa";
 import { IconContext } from "react-icons";
-import { formatNumber } from "../../../utils";
+import { FaBirthdayCake } from "react-icons/fa";
+import { formatNumber, getJalaliDate, getRelativeDate } from "../../../utils";
 import { CardTags } from "../../ui";
+import { PostList } from ".";
+
+enum ChannelType {
+  private = "خصوصی",
+  group = "گروه",
+  supergroup = "سوپر گروه",
+  channel = "کانال",
+  bot = "ربات",
+}
 
 const ViewChannel = (): JSX.Element => {
   const { channelId = "" } = useParams();
   const [loading, setLoading] = useState(true);
   const axiosPrivate = useApiPrivate();
   const { controller, setSignal } = useAbortController(false);
+  const [showPosts, setShowPosts] = useState(false);
   const [channel, setChannel] = useState<IChannel>({
     channel_date_created: "",
     channel_date_updated: "",
@@ -30,19 +41,19 @@ const ViewChannel = (): JSX.Element => {
     type: "",
   });
 
-  useEffect(() => {
-    const getChannelById = async () => {
-      try {
-        setLoading(true);
-        const { data } = await getChannel(axiosPrivate, channelId, controller);
-        setChannel(data.value[0]);
-        setLoading(false);
-      } catch (err: any) {
-        console.log(err);
-        setLoading(false);
-      }
-    };
+  const getChannelById = async () => {
+    try {
+      setLoading(true);
+      const { data } = await getChannel(axiosPrivate, channelId, controller);
+      setChannel(data.value[0]);
+      setLoading(false);
+    } catch (err: any) {
+      console.log(err);
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     getChannelById();
 
     return () => {
@@ -54,26 +65,43 @@ const ViewChannel = (): JSX.Element => {
   if (loading) {
     return <p className="loading loading-spinner loading-lg"></p>;
   } else if (channel.id === 0) {
-    return <button className="btn-secondary btn">fetch again?</button>;
+    return (
+      <button className="btn-secondary btn" onClick={getChannelById}>
+        لود دوباره
+      </button>
+    );
   }
 
   return (
-    <IconContext.Provider value={{ size: "25px" }}>
+    <IconContext.Provider value={{ size: "23px" }}>
       <section className="">
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-xl text-secondary">{channel.name}</h1>
-              <p className="text-sm text-base-300">
-                {channel.channel_telegram_id}
-              </p>
+              {channel.type === "channel" ? (
+                <a
+                  target="_black"
+                  referrerPolicy="no-referrer"
+                  href={`https://t.me/${channel.channel_telegram_id}`}
+                  className="text-sm text-base-300 hover:underline"
+                >
+                  {channel.channel_telegram_id}@
+                </a>
+              ) : (
+                <p className="text-sm text-base-300">
+                  {channel.channel_telegram_id}@
+                </p>
+              )}
             </div>
-            <p className="badge badge-warning !p-4">{channel.type}</p>
+            <p className="badge badge-warning !p-4">
+              {ChannelType[channel.type as keyof typeof ChannelType]}
+            </p>
           </div>
           <CardTags tags={channel.tags} />
         </div>
       </section>
-      <section className="my-4 grid grid-cols-1 items-center gap-2 sm:grid-cols-2 md:grid-cols-3">
+      <section className="my-4 grid grid-cols-1 items-center gap-4 sm:grid-cols-2 md:grid-cols-3">
         <ChannelStat
           title="تعداد کل بازدیدها"
           value={formatNumber(channel.view)}
@@ -89,10 +117,28 @@ const ViewChannel = (): JSX.Element => {
           value={formatNumber(channel.members_count)}
           icon={<FaUserAlt />}
         />
+        <ChannelStat
+          title="تاریخ ساخت"
+          value={getJalaliDate(channel.channel_date_created)}
+          icon={<FaBirthdayCake />}
+          moreInfo={getRelativeDate(channel.channel_date_created)}
+        />
       </section>
-      <p>baghie etellat channel ro neshon bedam</p>
-      <button className="btn-info btn">لیست پست ها</button>
-      {/* <PostList /> */}
+      <p className="my-4 text-justify text-base leading-6 text-base-content">
+        {channel.description}
+      </p>
+      {showPosts ? (
+        <PostList />
+      ) : (
+        <button
+          className="btn-info btn mb-40"
+          onClick={() => {
+            setShowPosts(true);
+          }}
+        >
+          لیست پست ها
+        </button>
+      )}
     </IconContext.Provider>
   );
 };
@@ -101,67 +147,23 @@ interface IChannelStat {
   title: string;
   value: string | number;
   icon: ReactNode;
+  moreInfo?: string;
 }
 
-const ChannelStat = ({ title, value, icon }: IChannelStat): JSX.Element => {
+const ChannelStat = ({
+  title,
+  value,
+  icon,
+  moreInfo,
+}: IChannelStat): JSX.Element => {
   return (
     <div className="stat bg-base-100 shadow">
       <div className="stat-figure text-info-content">{icon}</div>
       <div className="stat-title">{title}</div>
       <div className="stat-value text-2xl text-info-content">{value}</div>
+      <div className="stat-desc">{moreInfo}</div>
     </div>
   );
-};
-
-interface IPost {
-  id: number;
-  details: string;
-  view: number;
-  share: number;
-  type: number;
-  tags: string;
-  channelId: number;
-  created_at: string;
-  updated_at: string;
-}
-
-const PostList = (): JSX.Element => {
-  const { channelId = "" } = useParams();
-  const axiosPrivate = useApiPrivate();
-  const [loading, setLoading] = useState(true);
-  const [posts, setPosts] = useState<IPost[]>([]);
-  const [page, setPage] = useState(1);
-  const { controller, setSignal } = useAbortController(false);
-
-  useEffect(() => {
-    const getPostsByChannelId = async () => {
-      try {
-        setLoading(true);
-        const { data } = await getPosts(
-          axiosPrivate,
-          channelId,
-          page,
-          controller
-        );
-        setPosts(data.value);
-        setLoading(false);
-      } catch (err: any) {
-        console.log(err);
-        setLoading(false);
-      }
-    };
-
-    getPostsByChannelId();
-
-    return () => {
-      setLoading(false);
-      setSignal(true);
-    };
-  }, []);
-
-  console.log("posts :>> ", posts);
-
-  return <div>list posts</div>;
 };
 
 export default ViewChannel;

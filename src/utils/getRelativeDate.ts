@@ -7,7 +7,7 @@ dayjs.extend(jalaliPlugin);
 dayjs.calendar("jalali");
 dayjs.locale("fa");
 
-const getRelativeDate = (date: Date, dateFrom = new Date()) => {
+const getRelativeDate = (date: Date | string, dateFrom = new Date()) => {
   if (dayjs(date).diff(dateFrom, "day") <= 0) {
     return dayjs(date).from(dateFrom);
   }

@@ -13,17 +13,26 @@ const FilterInput = (): JSX.Element => {
       </option>
       <option
         value="filter_1"
-        className=" cursor-pointer bg-secondary bg-opacity-20 !py-0.5 text-xs text-secondary-focus"
+        className=" cursor-pointer !py-0.5 text-xs md:text-sm"
       >
         فیلتر بر اساس بیشترین بازدید در تمام پست ها
       </option>
-      <option value="filter_2">
+      <option
+        value="filter_2"
+        className="cursor-pointer !py-0.5 text-xs md:text-sm"
+      >
         فیلتر بر اساس کمترین بازدید در تمام پست ها
       </option>
-      <option value="filter_3">
+      <option
+        value="filter_3"
+        className="cursor-pointer !py-0.5 text-xs md:text-sm"
+      >
         فیلتر بر اساس بیشترین اشتراک گذاری در تمام پست ها
       </option>
-      <option value="filter_4">
+      <option
+        value="filter_4"
+        className="cursor-pointer !py-0.5 text-xs md:text-sm"
+      >
         فیلتر بر اساس کمترین اشتراک گذاری در تمام پست ها
       </option>
     </select>
