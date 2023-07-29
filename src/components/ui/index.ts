@@ -5,3 +5,4 @@ export { default as CardMobile } from "./CardMobile";
 export { default as CardDesktop } from "./CardDesktop";
 export { default as BreadCrumbs } from "./BreadCrumbs";
 export { default as Pagination } from "./Pagination";
+export { default as Stat } from "./Stat";

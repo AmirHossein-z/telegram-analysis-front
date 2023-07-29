@@ -1,4 +1,5 @@
 import { JSX, useMemo } from "react";
+import { useLocation } from "react-router-dom";
 
 // with the help of
 // https://www.freecodecamp.org/news/build-a-custom-pagination-component-in-react/
@@ -23,6 +24,7 @@ const Pagination = ({
   currentPage,
   pageSize,
 }: IPaginationProps): JSX.Element => {
+  const { key } = useLocation();
   const paginationRange =
     usePagination({
       currentPage,
@@ -50,27 +52,23 @@ const Pagination = ({
   }
 
   return (
-    <ul className="join" style={{ direction: "ltr" }}>
+    <ul className="join flex justify-center" style={{ direction: "ltr" }}>
       <li
         className={`join-item btn ${currentPage === 1 ? "btn-disabled" : ""}`}
         onClick={onPrevious}
       >
         {PREVIOUS}
       </li>
-      {paginationRange.map((pageNumber) => {
+      {paginationRange.map((pageNumber, index) => {
         // If the pageItem is a DOT, render the DOTS unicode character
         if (pageNumber === DOTS) {
-          return (
-            <li className="btn-disabled join-item btn" key={pageNumber}>
-              ...
-            </li>
-          );
+          return <li className="btn-disabled join-item btn">...</li>;
         }
 
         // Render our Page Pills
         return (
           <li
-            key={pageNumber}
+            key={key + index}
             className={`join-item btn ${
               pageNumber === currentPage ? "bg-primary" : ""
             }`}

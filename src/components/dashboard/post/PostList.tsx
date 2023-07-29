@@ -2,19 +2,14 @@ import { useParams, useSearchParams } from "react-router-dom";
 import { useAbortController, useApiPrivate } from "../../../hooks";
 import { useEffect, useState } from "react";
 import { getPosts } from "../../../apis";
-import { CardDesktop, CardMobile, Pagination } from "../../ui";
-
-interface IPost {
-  id: number;
-  details: string;
-  view: number;
-  share: number;
-  type: number;
-  tags: string;
-  channelId: number;
-  created_at: string;
-  updated_at: string;
-}
+import {
+  CardDesktop,
+  CardMobile,
+  FilterInput,
+  Pagination,
+  SearchButton,
+} from "../../ui";
+import { IPost } from "./types";
 
 const PostList = (): JSX.Element => {
   const { channelId = "" } = useParams();
@@ -23,29 +18,30 @@ const PostList = (): JSX.Element => {
   const [posts, setPosts] = useState<IPost[]>([]);
   const { controller, setSignal } = useAbortController(false);
   const [searchParams, setSearchParams] = useSearchParams({});
-  const [pageInfo, setPageInfo] = useState({ pageSize: 0, totalCount: 0 });
-  const [currentPage, setCurrentPage] = useState(
-    parseInt(searchParams.get("page") ?? "", 10) || 1
-  );
+  const [pageInfo, setPageInfo] = useState({
+    pageSize: 0,
+    totalCount: 0,
+    currentPage: parseInt(searchParams.get("page") ?? "", 10) || 1,
+  });
 
   const getPostsByChannelId = async () => {
     try {
       setLoading(true);
-      setSearchParams({ page: currentPage.toString() });
+      setSearchParams({ page: pageInfo.currentPage.toString() });
       const { data } = await getPosts(
         axiosPrivate,
         channelId,
-        currentPage,
+        pageInfo.currentPage,
         controller
       );
-      console.log("data :>> ", data);
       setPosts(data.value?.data);
-      setCurrentPage(data.value?.current_page);
       setPageInfo({
         ...pageInfo,
         pageSize: data.value?.per_page,
         totalCount: data.value?.total,
+        currentPage: data.value?.current_page,
       });
+      // scrollToAnchor("#post_list");
       setLoading(false);
     } catch (err: any) {
       console.log(err);
@@ -69,7 +65,7 @@ const PostList = (): JSX.Element => {
       setLoading(false);
       setSignal(true);
     };
-  }, [currentPage]);
+  }, [pageInfo.currentPage]);
 
   if (loading) {
     return <p className="loading loading-spinner loading-lg"></p>;
@@ -85,48 +81,57 @@ const PostList = (): JSX.Element => {
   }
 
   return (
-    <section className="mb-40 mt-4">
-      <List />
-      <Pagination
-        currentPage={currentPage}
-        totalCount={pageInfo.totalCount}
-        pageSize={pageInfo.pageSize}
-        siblingCount={1}
-        onPageChange={(page: number) => setCurrentPage(page)}
-      />
-    </section>
+    <>
+      <section className="mb-5 flex w-full flex-wrap gap-4">
+        <FilterInput />
+        <SearchButton />
+      </section>
+      <section className="mb-5 flex flex-col gap-10">
+        <a className="text-2xl font-semibold text-primary">لیست پست ها</a>
+        <List posts={posts} />
+        <Pagination
+          currentPage={pageInfo.currentPage}
+          totalCount={pageInfo.totalCount}
+          pageSize={pageInfo.pageSize}
+          siblingCount={1}
+          onPageChange={(page: number) =>
+            setPageInfo({ ...pageInfo, currentPage: page })
+          }
+        />
+      </section>
+    </>
   );
 };
 
-const List = () => {
+const List = ({ posts }: { posts: IPost[] }) => {
   return (
     <>
       {/* mobile & tablet */}
-      <section className="mb-40 grid grid-cols-1 items-start justify-center gap-5 md:hidden">
-        {channels?.map((channel) => (
+      <section className="grid grid-cols-1 items-start justify-center gap-5 md:hidden">
+        {posts?.map((post) => (
           <CardMobile
-            key={channel.id}
-            id={channel.id}
-            name={channel.name}
-            channelTelegramId={channel.channel_telegram_id}
-            view={channel.view}
-            share={channel.share}
-            tags={channel.tags}
+            path={`/dashboard/channels/${post.channel_id}/posts/`}
+            key={post.id}
+            id={post.id}
+            view={post.view}
+            name={post.details}
+            share={post.share}
+            tags={post.tags}
           />
         ))}
       </section>
 
       {/* desktop */}
       <section className="hidden md:grid md:grid-cols-2 md:items-center md:justify-center md:gap-3">
-        {channels?.map((channel) => (
+        {posts?.map((post) => (
           <CardDesktop
-            key={channel.id}
-            id={channel.id}
-            name={channel.name}
-            channelTelegramId={channel.channel_telegram_id}
-            view={channel.view}
-            share={channel.share}
-            tags={channel.tags}
+            path={`/dashboard/channels/${post.channel_id}/posts/`}
+            key={post.id}
+            name={post.details}
+            id={post.id}
+            view={post.view}
+            share={post.share}
+            tags={post.tags}
           />
         ))}
       </section>

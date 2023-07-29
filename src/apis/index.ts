@@ -200,3 +200,13 @@ export const getPosts = async (
     }
   );
 };
+
+export const getPost = async (
+  axiosPrivate: AxiosInstance,
+  postId: string,
+  controller: AbortController
+) => {
+  return await axiosPrivate.get(`dashboard/post/${postId}`, {
+    signal: controller.signal,
+  });
+};

@@ -4,7 +4,7 @@ import { getChannels } from "../../../apis";
 import AuthContext from "../../../context/AuthProvider";
 import { Link, Navigate } from "react-router-dom";
 import { CardDesktop, CardMobile, FilterInput, SearchButton } from "../../ui";
-import { IChannel } from "../../../types";
+import { IChannel } from "./types";
 
 interface IChannelListProps {
   channels: IChannel[];
@@ -71,9 +71,10 @@ const ChannelList = ({ channels }: IChannelListProps): JSX.Element => {
   return (
     <>
       {/* mobile & tablet */}
-      <section className="mb-40 grid grid-cols-1 items-start justify-center gap-5 md:hidden">
+      <section className="mb-40 grid grid-cols-1 justify-center gap-5 md:hidden">
         {channels?.map((channel) => (
           <CardMobile
+            path={`/dashboard/channels/${channel.id}`}
             key={channel.id}
             id={channel.id}
             name={channel.name}
@@ -89,6 +90,7 @@ const ChannelList = ({ channels }: IChannelListProps): JSX.Element => {
       <section className="hidden md:grid md:grid-cols-2 md:items-center md:justify-center md:gap-3">
         {channels?.map((channel) => (
           <CardDesktop
+            path={`/dashboard/channels/`}
             key={channel.id}
             id={channel.id}
             name={channel.name}

@@ -7,17 +7,23 @@ import { useNavigate } from "react-router-dom";
 import { formatNumber } from "../../utils";
 
 const CardMobile = (props: ICardProps): JSX.Element => {
-  const { id, name, channelTelegramId, view, share, tags } = props;
+  const { id, name, channelTelegramId, view, share, tags, path } = props;
   const navigate = useNavigate();
 
   return (
     <section
       className="flex cursor-pointer flex-wrap justify-between gap-5 rounded bg-base-100 px-3 py-4 text-base-content shadow-bg transition-all duration-300 ease-linear hover:bg-base-200"
-      onClick={() => navigate(`/dashboard/channels/${id}`)}
+      onClick={() => navigate(`${path}${id}`)}
     >
       <div className="flex flex-grow flex-col items-start justify-between gap-6">
         <div className="flex flex-col gap-1">
-          <p className="text-sm font-semibold">{name}</p>
+          {name?.length && name.length > 90 ? (
+            <h2 className="card-body text-justify font-normal">
+              {name.trim().substring(0, 90)}...
+            </h2>
+          ) : (
+            <h2 className="card-title text-base font-normal">{name?.trim()}</h2>
+          )}
           <p className="text-[10px] text-primary">{channelTelegramId}</p>
         </div>
         <CardTags tags={tags} />

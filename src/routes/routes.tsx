@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { Navigate, createBrowserRouter } from "react-router-dom";
 import {
   DashboardPage,
   ErrorPage,
@@ -11,6 +11,7 @@ import { Channels, Default, Profile, Tags } from "../components/dashboard";
 import { EditProfile, ResetPassword } from "../components/dashboard/profile";
 import { Helmet } from "react-helmet-async";
 import { AddChannel, ViewChannel } from "../components/dashboard/channel";
+import { PostList, ViewPost } from "../components/dashboard/post";
 
 const dashboardSections = [
   {
@@ -93,6 +94,23 @@ const dashboardSections = [
           <title>افزودن کانال</title>
         </Helmet>
         <AddChannel />
+      </>
+    ),
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/dashboard/channels/:channelId/posts",
+    element: <PostList />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/dashboard/channels/:channelId/posts/:postId",
+    element: (
+      <>
+        <Helmet>
+          <title>اطلاعات پست</title>
+        </Helmet>
+        <ViewPost />
       </>
     ),
     errorElement: <ErrorPage />,

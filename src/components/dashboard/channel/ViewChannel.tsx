@@ -1,16 +1,17 @@
-import { JSX, ReactNode, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { JSX, useEffect, useState } from "react";
+import { Navigate, useParams } from "react-router-dom";
 import { getChannel } from "../../../apis";
 import { useAbortController, useApiPrivate } from "../../../hooks";
-import { IChannel } from "../../../types";
+import { IChannel } from "./types";
 import { AiFillEye } from "react-icons/ai";
 import { BsFillShareFill } from "react-icons/bs";
 import { FaUserAlt } from "react-icons/fa";
 import { IconContext } from "react-icons";
 import { FaBirthdayCake } from "react-icons/fa";
 import { formatNumber, getJalaliDate, getRelativeDate } from "../../../utils";
-import { CardTags } from "../../ui";
-import { PostList } from ".";
+import { CardTags, Stat } from "../../ui";
+import { PostList } from "../post";
+import { StatContainer } from "../../../containers";
 
 enum ChannelType {
   private = "خصوصی",
@@ -64,7 +65,7 @@ const ViewChannel = (): JSX.Element => {
 
   if (loading) {
     return <p className="loading loading-spinner loading-lg"></p>;
-  } else if (channel.id === 0) {
+  } else if (channel?.id === 0) {
     return (
       <button className="btn-secondary btn" onClick={getChannelById}>
         لود دوباره
@@ -90,7 +91,7 @@ const ViewChannel = (): JSX.Element => {
                 </a>
               ) : (
                 <p className="text-sm text-base-300">
-                  {channel.channel_telegram_id}@
+                  {channel.channel_telegram_id}
                 </p>
               )}
             </div>
@@ -101,34 +102,34 @@ const ViewChannel = (): JSX.Element => {
           <CardTags tags={channel.tags} />
         </div>
       </section>
-      <section className="my-4 grid grid-cols-1 items-center gap-4 sm:grid-cols-2 md:grid-cols-3">
-        <ChannelStat
+      <StatContainer>
+        <Stat
           title="تعداد کل بازدیدها"
           value={formatNumber(channel.view)}
           icon={<AiFillEye />}
         />
-        <ChannelStat
+        <Stat
           title="تعداد کل اشتراک‌ها"
           value={formatNumber(channel.share)}
           icon={<BsFillShareFill />}
         />
-        <ChannelStat
+        <Stat
           title="تعداد کل اعضا"
           value={formatNumber(channel.members_count)}
           icon={<FaUserAlt />}
         />
-        <ChannelStat
+        <Stat
           title="تاریخ ساخت"
           value={getJalaliDate(channel.channel_date_created)}
           icon={<FaBirthdayCake />}
           moreInfo={getRelativeDate(channel.channel_date_created)}
         />
-      </section>
+      </StatContainer>
       <p className="my-4 text-justify text-base leading-6 text-base-content">
         {channel.description}
       </p>
       {showPosts ? (
-        <PostList />
+        <Navigate to={`/dashboard/channels/${channelId}/posts`} />
       ) : (
         <button
           className="btn-info btn mb-40"
@@ -140,29 +141,6 @@ const ViewChannel = (): JSX.Element => {
         </button>
       )}
     </IconContext.Provider>
-  );
-};
-
-interface IChannelStat {
-  title: string;
-  value: string | number;
-  icon: ReactNode;
-  moreInfo?: string;
-}
-
-const ChannelStat = ({
-  title,
-  value,
-  icon,
-  moreInfo,
-}: IChannelStat): JSX.Element => {
-  return (
-    <div className="stat bg-base-100 shadow">
-      <div className="stat-figure text-info-content">{icon}</div>
-      <div className="stat-title">{title}</div>
-      <div className="stat-value text-2xl text-info-content">{value}</div>
-      <div className="stat-desc">{moreInfo}</div>
-    </div>
   );
 };
 
