@@ -1,17 +1,24 @@
-import { Navigate, createBrowserRouter } from "react-router-dom";
-import {
-  DashboardPage,
-  ErrorPage,
-  LoginPage,
-  MainPage,
-  NotFoundPage,
-  RegisterPage,
-} from "../pages";
-import { Channels, Default, Profile, Tags } from "../components/dashboard";
-import { EditProfile, ResetPassword } from "../components/dashboard/profile";
+import { createBrowserRouter } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { AddChannel, ViewChannel } from "../components/dashboard/channel";
-import { PostList, ViewPost } from "../components/dashboard/post";
+
+import { DashboardLayout } from "../layouts";
+import {
+  AddChannel,
+  Channels,
+  EditProfile,
+  ErrorBoundary,
+  Login,
+  MainDashboard,
+  NotFound,
+  PostList,
+  Profile,
+  Register,
+  ResetPassword,
+  Tags,
+  ViewChannel,
+  ViewPost,
+} from "../pages";
+import { Main } from "../pages/main";
 
 const dashboardSections = [
   {
@@ -21,10 +28,10 @@ const dashboardSections = [
         <Helmet>
           <title>صفحه اصلی داشبورد</title>
         </Helmet>
-        <Default />
+        <MainDashboard />
       </>
     ),
-    errorElement: <ErrorPage />,
+    errorElement: <ErrorBoundary />,
   },
   {
     path: "/dashboard/profile",
@@ -36,7 +43,7 @@ const dashboardSections = [
         <Profile />
       </>
     ),
-    errorElement: <ErrorPage />,
+    errorElement: <ErrorBoundary />,
   },
   {
     path: "/dashboard/profile/edit",
@@ -48,7 +55,7 @@ const dashboardSections = [
         <EditProfile />
       </>
     ),
-    errorElement: <ErrorPage />,
+    errorElement: <ErrorBoundary />,
   },
   {
     path: "/dashboard/profile/reset-password",
@@ -60,7 +67,7 @@ const dashboardSections = [
         <ResetPassword />
       </>
     ),
-    errorElement: <ErrorPage />,
+    errorElement: <ErrorBoundary />,
   },
   {
     path: "/dashboard/channels",
@@ -72,7 +79,7 @@ const dashboardSections = [
         <Channels />
       </>
     ),
-    errorElement: <ErrorPage />,
+    errorElement: <ErrorBoundary />,
   },
   {
     path: "/dashboard/channels/:channelId",
@@ -84,7 +91,7 @@ const dashboardSections = [
         <ViewChannel />
       </>
     ),
-    errorElement: <ErrorPage />,
+    errorElement: <ErrorBoundary />,
   },
   {
     path: "/dashboard/add_channel",
@@ -96,12 +103,12 @@ const dashboardSections = [
         <AddChannel />
       </>
     ),
-    errorElement: <ErrorPage />,
+    errorElement: <ErrorBoundary />,
   },
   {
     path: "/dashboard/channels/:channelId/posts",
     element: <PostList />,
-    errorElement: <ErrorPage />,
+    errorElement: <ErrorBoundary />,
   },
   {
     path: "/dashboard/channels/:channelId/posts/:postId",
@@ -113,7 +120,7 @@ const dashboardSections = [
         <ViewPost />
       </>
     ),
-    errorElement: <ErrorPage />,
+    errorElement: <ErrorBoundary />,
   },
   {
     path: "/dashboard/tags",
@@ -125,7 +132,7 @@ const dashboardSections = [
         <Tags />,
       </>
     ),
-    errorElement: <ErrorPage />,
+    errorElement: <ErrorBoundary />,
   },
 ];
 
@@ -137,10 +144,10 @@ const pages = [
         <Helmet>
           <title>صفحه اصلی</title>
         </Helmet>
-        <MainPage />
+        <Main />
       </>
     ),
-    errorElement: <ErrorPage />,
+    errorElement: <ErrorBoundary />,
   },
   {
     path: "/register",
@@ -149,10 +156,10 @@ const pages = [
         <Helmet>
           <title>ثبت نام</title>
         </Helmet>
-        <RegisterPage />
+        <Register />
       </>
     ),
-    errorElement: <ErrorPage />,
+    errorElement: <ErrorBoundary />,
   },
   {
     path: "/login",
@@ -161,15 +168,15 @@ const pages = [
         <Helmet>
           <title>ورود</title>
         </Helmet>
-        <LoginPage />
+        <Login />
       </>
     ),
-    errorElement: <ErrorPage />,
+    errorElement: <ErrorBoundary />,
   },
   {
     path: "/dashboard",
-    element: <DashboardPage />,
-    errorElement: <ErrorPage />,
+    element: <DashboardLayout />,
+    errorElement: <ErrorBoundary />,
     children: [...dashboardSections],
   },
 ];
@@ -183,7 +190,7 @@ const routes = createBrowserRouter([
         <Helmet>
           <title>صفحه مورد نظر پیدا نشد!</title>
         </Helmet>
-        <NotFoundPage />
+        <NotFound />
       </>
     ),
   },

@@ -1,6 +1,10 @@
-export { default as MainPage } from "./MainPage";
-export { default as RegisterPage } from "./RegisterPage";
-export { default as LoginPage } from "./LoginPage";
-export { default as NotFoundPage } from "./NotFoundPage";
-export { default as DashboardPage } from "./DashboardPage";
-export { default as ErrorPage } from "./ErrorPage";
+export * from "./profile";
+export * from "./error";
+export * from "./main-dashboard";
+export * from "./reset-password";
+export * from "./channel";
+export * from "./tags";
+export * from "./post";
+export * from "./not-found";
+export * from "./register";
+export * from "./login";

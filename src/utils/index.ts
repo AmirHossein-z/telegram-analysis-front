@@ -1,3 +1,3 @@
-export { default as getRelativeDate } from "./getRelativeDate";
-export { default as formatNumber } from "./formatNumber";
-export { default as getJalaliDate } from "./getJalaliDate";
+export { default as getRelativeDate } from "./get-relative-date";
+export { default as formatNumber } from "./format-number";
+export { default as getJalaliDate } from "./get-jalali-date";

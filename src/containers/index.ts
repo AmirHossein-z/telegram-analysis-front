@@ -1,1 +1,1 @@
-export { default as StatContainer } from "./StatContainer";
+export { default as StatContainer } from "./stat-container";

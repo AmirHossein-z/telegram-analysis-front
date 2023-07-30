@@ -1,3 +1,3 @@
-export { default as useApiPrivate } from "./useApiPrivate";
-export { default as useMediaMatch } from "./useMediaMatch";
-export { default as useAbortController } from "./useAbortController";
+export { default as useApiPrivate } from "./use-api-private";
+export { default as useMediaMatch } from "./use-media-match";
+export { default as useAbortController } from "./use-abort-controller";
