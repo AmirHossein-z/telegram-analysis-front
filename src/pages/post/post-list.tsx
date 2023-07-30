@@ -108,7 +108,7 @@ const List = ({ posts }: { posts: IPost[] }) => {
   return (
     <>
       {/* mobile & tablet */}
-      <section className="grid grid-cols-1 items-start justify-center gap-5 md:hidden">
+      <section className="mb-40 grid grid-cols-1 items-start justify-center gap-5 md:hidden">
         {posts?.map((post) => (
           <CardMobile
             path={`/dashboard/channels/${post.channel_id}/posts/`}
@@ -123,7 +123,7 @@ const List = ({ posts }: { posts: IPost[] }) => {
       </section>
 
       {/* desktop */}
-      <section className="hidden md:grid md:grid-cols-2 md:items-center md:justify-center md:gap-3">
+      <section className="mb-20 hidden md:grid md:grid-cols-2 md:items-center md:justify-center md:gap-3">
         {posts?.map((post) => (
           <CardDesktop
             path={`/dashboard/channels/${post.channel_id}/posts/`}

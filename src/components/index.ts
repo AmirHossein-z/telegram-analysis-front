@@ -1,4 +1,3 @@
-export { default as BreadCrumbs } from "./breadcrumbs";
 export { default as CardDesktop } from "./card-desktop";
 export { default as CardMobile } from "./card-mobile";
 export { default as CardTags } from "./card-tags";

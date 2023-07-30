@@ -23,5 +23,3 @@ placed in that page folder like:
 src/pages/pages-folder/components/component-name.tsx
 src/pages/pages-folder/hooks/hook-name.ts
 ...
-
-

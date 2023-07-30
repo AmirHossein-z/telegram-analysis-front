@@ -1,5 +1,5 @@
 import { JSX, useEffect, useState } from "react";
-import { Navigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { getChannel } from "../../../apis";
 import { useAbortController, useApiPrivate } from "../../../hooks";
 import { AiFillEye } from "react-icons/ai";
@@ -25,7 +25,6 @@ const ViewChannel = (): JSX.Element => {
   const [loading, setLoading] = useState(true);
   const axiosPrivate = useApiPrivate();
   const { controller, setSignal } = useAbortController(false);
-  const [showPosts, setShowPosts] = useState(false);
   const [channel, setChannel] = useState<IChannel>({
     channel_date_created: "",
     channel_date_updated: "",
@@ -127,18 +126,12 @@ const ViewChannel = (): JSX.Element => {
       <p className="my-4 text-justify text-base leading-6 text-base-content">
         {channel.description}
       </p>
-      {showPosts ? (
-        <Navigate to={`/dashboard/channels/${channelId}/posts`} />
-      ) : (
-        <button
-          className="btn-info btn mb-40"
-          onClick={() => {
-            setShowPosts(true);
-          }}
-        >
-          لیست پست ها
-        </button>
-      )}
+      <Link
+        to={`/dashboard/channels/${channelId}/posts`}
+        className="btn-info btn mb-40"
+      >
+        لیست پست ها
+      </Link>
     </IconContext.Provider>
   );
 };

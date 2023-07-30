@@ -5,10 +5,12 @@ const API_URL = `http://localhost:8000/api/`;
 
 interface IParams {
   baseURL: string;
+  // withCredentials: boolean;
 }
 
 const config: IParams = {
   baseURL: API_URL,
+  // withCredentials: true,
 };
 
 /**
@@ -44,7 +46,11 @@ export const createUser = async (data: IInputData) => {
  * @returns refresh access token
  */
 export const getRefreshAccessToken = async () => {
-  const response = await axiosPublic.get("refresh");
+  const response = await apiPrivate.get("refresh", {
+    // headers: {
+    //   Authorization: `Bearer ${prevAccessToken}`,
+    // },
+  });
   return response?.data?.accessToken;
 };
 
@@ -81,10 +87,11 @@ export const getProfile = async (
  */
 export const getChannels = async (
   axiosPrivate: AxiosInstance,
+  page = 1,
   user_id: number,
   controller?: AbortController
 ) => {
-  return await axiosPrivate.get(`channels/${user_id}`, {
+  return await axiosPrivate.get(`channels/${user_id}?page=${page}`, {
     signal: controller?.signal,
   });
 };

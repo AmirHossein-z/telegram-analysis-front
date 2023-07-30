@@ -7,9 +7,9 @@ const useAbortController = (signalState: boolean) => {
   useEffect(() => {
     controller.current = new AbortController();
     return () => {
-      // if (signal) {
-      controller.current.abort();
-      // }
+      if (signal) {
+        controller.current.abort();
+      }
     };
   }, []);
 

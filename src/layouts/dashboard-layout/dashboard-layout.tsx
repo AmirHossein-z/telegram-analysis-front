@@ -1,10 +1,9 @@
 import { Outlet } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Sidebar } from "./components";
+import { Sidebar, BreadCrumbs } from "./components";
 import { IconContext } from "react-icons";
 import { useMediaMatch } from "../../hooks";
 import { JSX } from "react";
-import { BreadCrumbs } from "../../components";
 import { ProtectedRoute } from "../../routes";
 
 const DashboardLayout = (): JSX.Element => {

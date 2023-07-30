@@ -1,11 +1,11 @@
 import { useContext, useEffect } from "react";
-import { apiPrivate, getRefreshAccessToken } from "../apis";
+import { apiPrivate } from "../apis";
 import AuthContext from "../context/auth-provider";
 import useRefreshToken from "./use-refresh-token";
 
 const useApiPrivate = () => {
   const refresh = useRefreshToken();
-  const { auth } = useContext(AuthContext);
+  const { auth, setAuth } = useContext(AuthContext);
 
   useEffect(() => {
     const requestIntercept = apiPrivate.interceptors.request.use(
@@ -21,13 +21,23 @@ const useApiPrivate = () => {
       (response) => response,
       async (error) => {
         const prevRequest = error?.config;
-        if (error?.response?.status === 403 && ~prevRequest?.sent) {
-          prevRequest.sent = true;
-          const newAccessToken = await getRefreshAccessToken();
+        // if (error?.response?.status === 403 && ~prevRequest?.sent) {
+        //   prevRequest.sent = true;
+        //   const newAccessToken = await getRefreshAccessToken();
+        //   prevRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
+        //   return apiPrivate(prevRequest);
+        // }
+        // return Promise.reject(error);
+        if (error?.response?.status === 401 && !prevRequest._retry) {
+          prevRequest._retry = true;
+          const newAccessToken = await refresh();
+          console.log("newAccessToken :>> ", newAccessToken);
+          setAuth({ ...auth, accessToken: newAccessToken });
+          // auth.accessToken = newAccessToken;
           prevRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
           return apiPrivate(prevRequest);
         }
-        return Promise.reject(error);
+        // return Promise.reject(error);
       }
     );
 
