@@ -2,7 +2,6 @@ import { JSX } from "react";
 import { ICardProps } from "../types";
 import { BsFillShareFill } from "react-icons/bs";
 import { AiFillEye } from "react-icons/ai";
-import { CardTags } from ".";
 import { Link } from "react-router-dom";
 import { formatNumber } from "../utils";
 
@@ -25,11 +24,9 @@ const CardMobile = (props: ICardProps): JSX.Element => {
             )}
             <p className="text-[10px] text-primary">{channelTelegramId}</p>
           </div>
-          <CardTags tags={tags} />
+          {tags}
         </div>
         <div className="flex flex-grow-0 flex-wrap justify-end gap-3">
-          {/* reusable  */}
-          {/* should be a component this two view and share */}
           <button className="badge badge-secondary flex gap-3 !rounded !py-3 md:!py-3">
             {formatNumber(view)}
             <AiFillEye />

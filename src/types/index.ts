@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 export interface IInputData {
   email: string;
   password: string;
@@ -27,8 +29,9 @@ export interface ICardProps {
   channelTelegramId?: string;
   view: number;
   share: number;
-  tags: string;
+  // tags: string;
   path: string;
+  tags: ReactNode;
 }
 
 export interface IChannel {

@@ -1,18 +1,13 @@
-import { JSX, useContext, useEffect, useState } from "react";
-import { Link, Navigate, useSearchParams } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { Charts, Top10Posts } from ".";
+import { Pagination } from "../../../components";
+import { getChannels } from "../../../apis";
+import { useSearchParams } from "react-router-dom";
+import { useAbortController, useApiPrivate } from "../../../hooks";
+import AuthContext from "../../../context/auth-provider";
+import { IChannel } from "../../../types";
 
-import AuthContext from "../../context/auth-provider";
-import { useAbortController, useApiPrivate } from "../../hooks";
-import {
-  FilterInput,
-  SearchButton,
-  Pagination,
-  CardList,
-} from "../../components";
-import { IChannel } from "../../types";
-import { getChannels } from "../../apis";
-
-const Channels = (): JSX.Element => {
+const ChannelStat = () => {
   const axiosPrivate = useApiPrivate();
   const [loading, setLoading] = useState(true);
   const [channels, setChannels] = useState<IChannel[]>([]);
@@ -24,6 +19,7 @@ const Channels = (): JSX.Element => {
     totalCount: 0,
     currentPage: parseInt(searchParams.get("page") ?? "", 10) || 1,
   });
+  const [activeTab, setActiveTab] = useState(0);
 
   const fetchChannels = async () => {
     try {
@@ -74,11 +70,23 @@ const Channels = (): JSX.Element => {
   else if (channels?.length > 0) {
     return (
       <>
-        <section className="mb-5 flex w-full flex-wrap gap-4">
-          <FilterInput />
-          <SearchButton />
-        </section>
-        <CardList list={channels} />
+        <div className="tabs my-1 flex-nowrap justify-center overflow-x-auto !p-4">
+          {channels?.map((channel) => (
+            <a
+              className={`tab-lifted tab whitespace-nowrap ${
+                channel.id === activeTab ? "tab-active !font-bold" : ""
+              }`}
+              key={channel.id}
+              onClick={() => setActiveTab(channel.id)}
+            >
+              {channel.name}
+            </a>
+          ))}
+        </div>
+        {activeTab !== 0 && <Charts channelId={activeTab} />}
+        {/* top 10 */}
+        {activeTab !== 0 && <Top10Posts channelId={activeTab} />}
+        {/* top 10 */}
         <Pagination
           currentPage={pageInfo.currentPage}
           totalCount={pageInfo.totalCount}
@@ -88,17 +96,11 @@ const Channels = (): JSX.Element => {
             setPageInfo({ ...pageInfo, currentPage: page })
           }
         />
-        <Link
-          to={"/dashboard/add_channel"}
-          className="btn-warning btn fixed bottom-[5rem] left-2 md:bottom-4 md:left-4"
-        >
-          افزودن کانال
-        </Link>
       </>
     );
   } else {
-    return <Navigate to={"/dashboard/add_channel"} />;
+    return <p>شما در حال حاضر کانالی ندارید</p>;
   }
 };
 
-export default Channels;
+export default ChannelStat;

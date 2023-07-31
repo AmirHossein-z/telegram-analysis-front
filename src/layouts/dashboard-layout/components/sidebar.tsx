@@ -1,4 +1,4 @@
-import { Dispatch, JSX, SetStateAction, useContext } from "react";
+import { Dispatch, JSX, ReactNode, SetStateAction, useContext } from "react";
 import Aside from "./aside";
 import Navbar from "./navbar";
 import BottomNavigation from "./bottom-navigation";
@@ -56,26 +56,23 @@ const Sidebar = ({ toggleAside, setToggleAside }: IProps): JSX.Element => {
     }
   };
 
+  const userNav = !match ? (
+    <BottomNavigation activeStyle={activeStyle} />
+  ) : (
+    <Aside
+      toggleAside={toggleAside}
+      activeStyle={activeStyle}
+      logout={logout}
+    />
+  );
+
   // mobile & tablet
-  if (!match) {
-    return (
-      <>
-        <Navbar setToggleAside={setToggleAside} logout={logout} />
-        <BottomNavigation activeStyle={activeStyle} />
-      </>
-    );
-  } else {
-    return (
-      <>
-        <Navbar setToggleAside={setToggleAside} logout={logout} />
-        <Aside
-          toggleAside={toggleAside}
-          activeStyle={activeStyle}
-          logout={logout}
-        />
-      </>
-    );
-  }
+  return (
+    <>
+      <Navbar setToggleAside={setToggleAside} logout={logout} />
+      {userNav}
+    </>
+  );
 };
 
 export default Sidebar;

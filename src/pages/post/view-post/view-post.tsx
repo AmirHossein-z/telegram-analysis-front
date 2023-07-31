@@ -37,7 +37,6 @@ const ViewPost = (): JSX.Element => {
     try {
       setLoading(true);
       const { data } = await getPost(axiosPrivate, postId, controller);
-      console.log("data :>> ", data);
       setPost(data.value[0]);
       setLoading(false);
     } catch (err: any) {

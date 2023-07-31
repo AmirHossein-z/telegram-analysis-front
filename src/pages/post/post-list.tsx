@@ -3,8 +3,7 @@ import { useAbortController, useApiPrivate } from "../../hooks";
 import { useEffect, useState } from "react";
 import { getPosts } from "../../apis";
 import {
-  CardDesktop,
-  CardMobile,
+  CardList,
   FilterInput,
   Pagination,
   SearchButton,
@@ -42,7 +41,6 @@ const PostList = (): JSX.Element => {
         totalCount: data.value?.total,
         currentPage: data.value?.current_page,
       });
-      // scrollToAnchor("#post_list");
       setLoading(false);
     } catch (err: any) {
       console.log(err);
@@ -89,7 +87,8 @@ const PostList = (): JSX.Element => {
       </section>
       <section className="mb-5 flex flex-col gap-10">
         <a className="text-2xl font-semibold text-primary">لیست پست ها</a>
-        <List posts={posts} />
+        {/* <List posts={posts} /> */}
+        <CardList list={posts} />
         <Pagination
           currentPage={pageInfo.currentPage}
           totalCount={pageInfo.totalCount}
@@ -99,42 +98,6 @@ const PostList = (): JSX.Element => {
             setPageInfo({ ...pageInfo, currentPage: page })
           }
         />
-      </section>
-    </>
-  );
-};
-
-const List = ({ posts }: { posts: IPost[] }) => {
-  return (
-    <>
-      {/* mobile & tablet */}
-      <section className="mb-40 grid grid-cols-1 items-start justify-center gap-5 md:hidden">
-        {posts?.map((post) => (
-          <CardMobile
-            path={`/dashboard/channels/${post.channel_id}/posts/`}
-            key={post.id}
-            id={post.id}
-            view={post.view}
-            name={post.details}
-            share={post.share}
-            tags={post.tags}
-          />
-        ))}
-      </section>
-
-      {/* desktop */}
-      <section className="mb-20 hidden md:grid md:grid-cols-2 md:items-center md:justify-center md:gap-3">
-        {posts?.map((post) => (
-          <CardDesktop
-            path={`/dashboard/channels/${post.channel_id}/posts/`}
-            key={post.id}
-            name={post.details}
-            id={post.id}
-            view={post.view}
-            share={post.share}
-            tags={post.tags}
-          />
-        ))}
       </section>
     </>
   );

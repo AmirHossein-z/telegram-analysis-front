@@ -217,3 +217,23 @@ export const getPost = async (
     signal: controller.signal,
   });
 };
+
+export const getTop10 = async (
+  axiosPrivate: AxiosInstance,
+  channelId: number,
+  controller: AbortController
+) => {
+  return await axiosPrivate.get(`dashboard/top10/${channelId}`, {
+    signal: controller.signal,
+  });
+};
+
+export const getPostsStat = async (
+  axiosPrivate: AxiosInstance,
+  channelId: number,
+  controller: AbortController
+) => {
+  return await axiosPrivate.get(`dashboard/post/stat/${channelId}`, {
+    signal: controller.signal,
+  });
+};

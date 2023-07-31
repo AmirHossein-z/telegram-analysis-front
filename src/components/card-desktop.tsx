@@ -2,7 +2,6 @@ import { JSX } from "react";
 import { ICardProps } from "../types";
 import { BsFillShareFill } from "react-icons/bs";
 import { AiFillEye } from "react-icons/ai";
-import { CardTags } from ".";
 import { Link } from "react-router-dom";
 import { formatNumber } from "../utils";
 
@@ -31,7 +30,7 @@ const CardDesktop = (props: ICardProps): JSX.Element => {
               <BsFillShareFill />
             </button>
           </div>
-          <CardTags tags={tags} />
+          {tags}
         </div>
       </section>
     </Link>
