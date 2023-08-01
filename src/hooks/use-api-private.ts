@@ -1,11 +1,13 @@
 import { useContext, useEffect } from "react";
 import { apiPrivate } from "../apis";
 import AuthContext from "../context/auth-provider";
-import useRefreshToken from "./use-refresh-token";
+import { useNavigate } from "react-router-dom";
+// import useRefreshToken from "./use-refresh-token";
 
 const useApiPrivate = () => {
-  const refresh = useRefreshToken();
+  // const refresh = useRefreshToken();
   const { auth, setAuth } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const requestIntercept = apiPrivate.interceptors.request.use(
@@ -30,11 +32,12 @@ const useApiPrivate = () => {
         // return Promise.reject(error);
         if (error?.response?.status === 401 && !prevRequest._retry) {
           prevRequest._retry = true;
-          const newAccessToken = await refresh();
-          console.log("newAccessToken :>> ", newAccessToken);
-          setAuth({ ...auth, accessToken: newAccessToken });
+          navigate("/login");
+          // const newAccessToken = await refresh();
+          // console.log("newAccessToken :>> ", newAccessToken);
+          // setAuth({ ...auth, accessToken: newAccessToken });
           // auth.accessToken = newAccessToken;
-          prevRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
+          // prevRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
           return apiPrivate(prevRequest);
         }
         // return Promise.reject(error);
@@ -45,7 +48,8 @@ const useApiPrivate = () => {
       apiPrivate.interceptors.request.eject(requestIntercept);
       apiPrivate.interceptors.response.eject(responseIntercept);
     };
-  }, [auth.accessToken, refresh]);
+    // }, [auth.accessToken, refresh]);
+  }, [auth.accessToken]);
   return apiPrivate;
 };
 

@@ -89,11 +89,15 @@ export const getChannels = async (
   axiosPrivate: AxiosInstance,
   page = 1,
   user_id: number,
+  filter: string,
   controller?: AbortController
 ) => {
-  return await axiosPrivate.get(`channels/${user_id}?page=${page}`, {
-    signal: controller?.signal,
-  });
+  return await axiosPrivate.get(
+    `channels/${user_id}?page=${page}&filter=${filter}`,
+    {
+      signal: controller?.signal,
+    }
+  );
 };
 
 /**
@@ -198,10 +202,11 @@ export const getPosts = async (
   axiosPrivate: AxiosInstance,
   channelId: string,
   page = 1,
+  filter: string,
   controller: AbortController
 ) => {
   return await axiosPrivate.get(
-    `dashboard/channel/${channelId}/posts?page=${page}`,
+    `dashboard/channel/${channelId}/posts?page=${page}&filter=${filter}`,
     {
       signal: controller.signal,
     }

@@ -24,7 +24,10 @@ const AuthContext = createContext<IAuthContextValue>({
 });
 
 export const AuthProvider = ({ children }: IProps): JSX.Element => {
-  const [auth, setAuth] = useState<IAuth>({ accessToken: "", userId: "" });
+  const [auth, setAuth] = useState<IAuth>({
+    accessToken: "",
+    userId: "",
+  });
 
   return (
     <AuthContext.Provider value={{ auth, setAuth }}>

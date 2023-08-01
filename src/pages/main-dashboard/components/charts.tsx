@@ -35,7 +35,6 @@ const options = {
   plugins: {
     title: {
       display: false,
-      //   text: "Chart.js Line Chart - Multi Axis",
     },
   },
   scales: {
@@ -58,21 +57,26 @@ const options = {
 interface IData {
   view: IPost[];
   share: IPost[];
+  created_at: { id: number; created_at: string }[];
 }
 
 const Charts = ({ channelId }: { channelId: number }) => {
-  const [loading, setLoading] = useState(false);
+  const [_, setLoading] = useState(false);
   const axiosPrivate = useApiPrivate();
   const { controller, setSignal } = useAbortController(false);
-  const [data, setData] = useState<IData>({ view: [], share: [] });
-  const chartsData = aggregateData(data);
+  const [data, setData] = useState<IData>({
+    view: [],
+    share: [],
+    created_at: [],
+  });
+  const chartsData = aggregateViewShare(data);
+  const dateData = aggregateDate(data);
 
   const viewData = {
     labels: chartsData.view.map((item) => item.date),
     datasets: [
       {
         label: "نمودار view بر حسب ماه - سال",
-        // data: aggregateData(data).map((item) => item.view),
         data: chartsData.view.map((obj) => obj.count),
         fill: false,
         tension: 0.1,
@@ -98,15 +102,34 @@ const Charts = ({ channelId }: { channelId: number }) => {
     ],
   };
 
+  const datesData = {
+    labels: dateData.map((item) => item.date),
+    datasets: [
+      {
+        label: "نمودار تعداد پست منتشر شده بر حسب ماه - سال",
+        data: dateData.map((item) => item.count),
+        fill: false,
+        borderColor: "rgba(124, 17, 88)",
+        backgroundColor: "rgba(124, 17, 88,0.5)",
+        tension: 0.1,
+      },
+    ],
+  };
+
   const fetchStat = async () => {
     try {
       setLoading(true);
-      const { data: PostStat } = await getPostsStat(
+      const { data: postStat } = await getPostsStat(
         axiosPrivate,
         channelId,
         controller
       );
-      setData({ view: PostStat?.value?.view, share: PostStat?.value?.share });
+
+      setData({
+        view: postStat?.value?.view,
+        share: postStat?.value?.share,
+        created_at: postStat?.value?.date,
+      });
       setLoading(false);
     } catch (err) {
       console.log(err);
@@ -136,54 +159,52 @@ const Charts = ({ channelId }: { channelId: number }) => {
     <div className="flex flex-col gap-10">
       <Line options={options} data={viewData} />
       <Line options={options} data={shareData} />
+      <Line options={options} data={datesData} />
     </div>
   );
 };
 
-// const aggregateData = (data: IData) => {
-//   const result: { date: string; view: number; share: number }[] = [];
-//   data.view.forEach((item) => {
-//     const month = dayjs(item.created_at)
-//       .calendar("jalali")
-//       .locale("fa")
-//       .format("MMMM - YYYY");
-
-//     const index = result.findIndex((x) => x.date === month);
-//     if (index === -1) {
-//       result.push({ date: month, view: item.view, share: item.share });
-//     } else {
-//       result[index].view += item.view;
-//     }
-//   });
-//   return result;
-// };
-
-interface Iresult {
-  view: { date: string; count: number }[];
-  share: { date: string; count: number }[];
-  // [key: string]: { date: string; count: number }[];
-}
-const aggregateData = (data: IData) => {
-  const result: Iresult = {
+const aggregateViewShare = (data: IData) => {
+  const result: {
+    view: { date: string; count: number }[];
+    share: { date: string; count: number }[];
+  } = {
     view: [{ date: "", count: 0 }],
     share: [{ date: "", count: 0 }],
   };
 
   Object.keys(data).forEach((key) => {
-    data[key].forEach((item) => {
-      // const month = dayjs(item.created_at).format("YYYY-MM");
-      const month = dayjs(item.created_at)
-        .calendar("jalali")
-        .locale("fa")
-        .format("MMMM - YYYY");
-      const index = result[key].findIndex((x) => x.date === month);
-      if (index === -1) {
-        result[key].push({ date: month, count: item[key] });
-      } else {
-        result[key][index].count += item[key];
-      }
-    });
+    if (key === "view" || key === "share") {
+      data[key].forEach((item) => {
+        const month = dayjs(item.created_at)
+          .calendar("jalali")
+          .locale("fa")
+          .format("MMMM - YYYY");
+        const index = result[key].findIndex((x) => x.date === month);
+        if (index === -1) {
+          result[key].push({ date: month, count: item[key] });
+        } else {
+          result[key][index].count += item[key];
+        }
+      });
+    }
   });
+  return result;
+};
+
+const aggregateDate = (data: IData) => {
+  const counts: { [key: string]: number } = {};
+
+  data.created_at.forEach((date) => {
+    const month = dayjs(date.created_at).format("MMMM - YYYY");
+    counts[month] = (counts[month] || 0) + 1;
+  });
+
+  const result = Object.keys(counts).map((month) => ({
+    date: month,
+    count: counts[month].toString(),
+  }));
+
   return result;
 };
 

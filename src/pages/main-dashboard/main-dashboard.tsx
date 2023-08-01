@@ -1,20 +1,115 @@
-import { AiFillEye } from "react-icons/ai";
-import { Stat } from "../../components";
+import { useContext, useEffect, useState } from "react";
+import { Charts, Top10Posts } from "./components";
+import { Pagination, Stat } from "../../components";
+import { getChannels } from "../../apis";
+import { useSearchParams } from "react-router-dom";
+import { useAbortController, useApiPrivate } from "../../hooks";
+import AuthContext from "../../context/auth-provider";
+import { IChannel } from "../../types";
 import { StatContainer } from "../../containers";
-import { ChannelStat } from "./components";
+import { AiFillEye } from "react-icons/ai";
 
 const MainDashboard = () => {
-  return (
-    <>
-      <StatContainer>
-        <Stat title="تعداد کانال ها" value={12} icon={<AiFillEye />} />
-      </StatContainer>
-      <p>تعداد مقالات منتشر شده</p>
-      <p>(پست هایی با تاریخ ساختشون رو بگیر)</p>
-      <p>در هر ماه و تا یک سال گذشته</p>
-      <ChannelStat />
-    </>
-  );
+  const axiosPrivate = useApiPrivate();
+  const [loading, setLoading] = useState(true);
+  const [channels, setChannels] = useState<IChannel[]>([]);
+  const { auth } = useContext(AuthContext);
+  const { controller, setSignal } = useAbortController(false);
+  const [searchParams, setSearchParams] = useSearchParams({});
+  const [pageInfo, setPageInfo] = useState({
+    pageSize: 0,
+    totalCount: 0,
+    currentPage: parseInt(searchParams.get("page") ?? "", 10) || 1,
+  });
+  const [activeTab, setActiveTab] = useState(0);
+
+  const fetchChannels = async () => {
+    try {
+      setSearchParams({ page: pageInfo.currentPage.toString() });
+      setLoading(true);
+      const { data } = await getChannels(
+        axiosPrivate,
+        pageInfo.currentPage,
+        parseInt(auth.userId),
+        controller
+      );
+      setPageInfo({
+        ...pageInfo,
+        pageSize: data.value?.per_page,
+        totalCount: data.value?.total,
+        currentPage: data.value?.current_page,
+      });
+      setChannels(data.value?.data);
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchChannels();
+
+    return () => {
+      setLoading(false);
+      setSignal(true);
+    };
+  }, []);
+
+  useEffect(() => {
+    fetchChannels();
+
+    return () => {
+      setLoading(false);
+      setSignal(true);
+    };
+  }, [pageInfo.currentPage]);
+
+  if (loading) {
+    return <p className="loading loading-spinner loading-lg"></p>;
+  }
+  // has channels
+  else if (channels?.length > 0) {
+    return (
+      <>
+        <StatContainer>
+          <Stat
+            title="تعداد کانال ها"
+            value={channels.length}
+            icon={<AiFillEye />}
+          />
+        </StatContainer>
+        <div className="tabs my-1 flex-nowrap justify-center overflow-x-auto !p-4">
+          {channels?.map((channel) => (
+            <a
+              className={`tab-lifted tab whitespace-nowrap ${
+                channel.id === activeTab ? "tab-active !font-bold" : ""
+              }`}
+              key={channel.id}
+              onClick={() => setActiveTab(channel.id)}
+            >
+              {channel.name}
+            </a>
+          ))}
+        </div>
+        {activeTab !== 0 && <Charts channelId={activeTab} />}
+        {/* top 10 */}
+        {activeTab !== 0 && <Top10Posts channelId={activeTab} />}
+        {/* top 10 */}
+        <Pagination
+          currentPage={pageInfo.currentPage}
+          totalCount={pageInfo.totalCount}
+          pageSize={pageInfo.pageSize}
+          siblingCount={1}
+          onPageChange={(page: number) =>
+            setPageInfo({ ...pageInfo, currentPage: page })
+          }
+        />
+      </>
+    );
+  } else {
+    return <p>شما در حال حاضر کانالی ندارید</p>;
+  }
 };
 
 export default MainDashboard;

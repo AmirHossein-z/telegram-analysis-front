@@ -2,12 +2,7 @@ import { useParams, useSearchParams } from "react-router-dom";
 import { useAbortController, useApiPrivate } from "../../hooks";
 import { useEffect, useState } from "react";
 import { getPosts } from "../../apis";
-import {
-  CardList,
-  FilterInput,
-  Pagination,
-  SearchButton,
-} from "../../components";
+import { CardList, FilterInput, Pagination } from "../../components";
 
 import { IPost } from "../../types";
 
@@ -18,6 +13,7 @@ const PostList = (): JSX.Element => {
   const [posts, setPosts] = useState<IPost[]>([]);
   const { controller, setSignal } = useAbortController(false);
   const [searchParams, setSearchParams] = useSearchParams({});
+  const [filter, setFilter] = useState(searchParams.get("filter") ?? "0");
   const [pageInfo, setPageInfo] = useState({
     pageSize: 0,
     totalCount: 0,
@@ -27,13 +23,24 @@ const PostList = (): JSX.Element => {
   const getPostsByChannelId = async () => {
     try {
       setLoading(true);
-      setSearchParams({ page: pageInfo.currentPage.toString() });
+      if (filter !== "0") {
+        setSearchParams({
+          filter: filter,
+          page: pageInfo.currentPage.toString(),
+        });
+      } else {
+        setSearchParams({
+          page: pageInfo.currentPage.toString(),
+        });
+      }
       const { data } = await getPosts(
         axiosPrivate,
         channelId,
         pageInfo.currentPage,
+        filter,
         controller
       );
+      console.log("data :>> ", data);
       setPosts(data.value?.data);
       setPageInfo({
         ...pageInfo,
@@ -81,9 +88,12 @@ const PostList = (): JSX.Element => {
 
   return (
     <>
-      <section className="mb-5 flex w-full flex-wrap gap-4">
-        <FilterInput />
-        <SearchButton />
+      <section className="mb-5">
+        <FilterInput
+          getInfo={getPostsByChannelId}
+          filter={filter}
+          setFilter={setFilter}
+        />
       </section>
       <section className="mb-5 flex flex-col gap-10">
         <a className="text-2xl font-semibold text-primary">لیست پست ها</a>

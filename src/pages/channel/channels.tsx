@@ -3,12 +3,7 @@ import { Link, Navigate, useSearchParams } from "react-router-dom";
 
 import AuthContext from "../../context/auth-provider";
 import { useAbortController, useApiPrivate } from "../../hooks";
-import {
-  FilterInput,
-  SearchButton,
-  Pagination,
-  CardList,
-} from "../../components";
+import { FilterInput, Pagination, CardList } from "../../components";
 import { IChannel } from "../../types";
 import { getChannels } from "../../apis";
 
@@ -19,6 +14,7 @@ const Channels = (): JSX.Element => {
   const { auth } = useContext(AuthContext);
   const { controller, setSignal } = useAbortController(false);
   const [searchParams, setSearchParams] = useSearchParams({});
+  const [filter, setFilter] = useState(searchParams.get("filter") ?? "0");
   const [pageInfo, setPageInfo] = useState({
     pageSize: 0,
     totalCount: 0,
@@ -27,14 +23,25 @@ const Channels = (): JSX.Element => {
 
   const fetchChannels = async () => {
     try {
-      setSearchParams({ page: pageInfo.currentPage.toString() });
+      if (filter !== "0") {
+        setSearchParams({
+          filter: filter,
+          page: pageInfo.currentPage.toString(),
+        });
+      } else {
+        setSearchParams({
+          page: pageInfo.currentPage.toString(),
+        });
+      }
       setLoading(true);
       const { data } = await getChannels(
         axiosPrivate,
         pageInfo.currentPage,
         parseInt(auth.userId),
+        filter,
         controller
       );
+      console.log("data :>> ", data);
       setPageInfo({
         ...pageInfo,
         pageSize: data.value?.per_page,
@@ -75,8 +82,11 @@ const Channels = (): JSX.Element => {
     return (
       <>
         <section className="mb-5 flex w-full flex-wrap gap-4">
-          <FilterInput />
-          <SearchButton />
+          <FilterInput
+            filter={filter}
+            setFilter={setFilter}
+            getInfo={fetchChannels}
+          />
         </section>
         <CardList list={channels} />
         <Pagination

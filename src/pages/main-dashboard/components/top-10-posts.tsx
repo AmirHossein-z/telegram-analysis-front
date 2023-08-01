@@ -50,7 +50,7 @@ const Top10Posts = ({ channelId }: { channelId: number }): JSX.Element => {
 
   return (
     <>
-      <div className="my-3 flex items-center justify-center gap-6">
+      <div className="my-8 flex items-center justify-center gap-6">
         <div className="form-control">
           <label className="label cursor-pointer" style={{ direction: "ltr" }}>
             <span className="label-text text-lg">۱۰ پست پر بازدید</span>
