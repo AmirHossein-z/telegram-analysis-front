@@ -13,7 +13,7 @@ const PostList = (): JSX.Element => {
   const [posts, setPosts] = useState<IPost[]>([]);
   const { controller, setSignal } = useAbortController(false);
   const [searchParams, setSearchParams] = useSearchParams({});
-  const [filter, setFilter] = useState(searchParams.get("filter") ?? "0");
+  const [filter, setFilter] = useState(searchParams.get("filter") ?? "");
   const [pageInfo, setPageInfo] = useState({
     pageSize: 0,
     totalCount: 0,
@@ -23,16 +23,16 @@ const PostList = (): JSX.Element => {
   const getPostsByChannelId = async () => {
     try {
       setLoading(true);
-      if (filter !== "0") {
-        setSearchParams({
-          filter: filter,
-          page: pageInfo.currentPage.toString(),
-        });
-      } else {
-        setSearchParams({
-          page: pageInfo.currentPage.toString(),
-        });
-      }
+      // if (filter !== "0") {
+      setSearchParams({
+        filter,
+        page: pageInfo.currentPage.toString(),
+      });
+      // // } else {
+      //   setSearchParams({
+      //     page: pageInfo.currentPage.toString(),
+      //   });
+      // }
       const { data } = await getPosts(
         axiosPrivate,
         channelId,
@@ -40,7 +40,6 @@ const PostList = (): JSX.Element => {
         filter,
         controller
       );
-      console.log("data :>> ", data);
       setPosts(data.value?.data);
       setPageInfo({
         ...pageInfo,

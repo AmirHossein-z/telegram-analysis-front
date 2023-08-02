@@ -1,12 +1,4 @@
-import {
-  ChangeEvent,
-  Dispatch,
-  FormEvent,
-  JSX,
-  SetStateAction,
-  useState,
-} from "react";
-import { SetURLSearchParams, useSearchParams } from "react-router-dom";
+import { ChangeEvent, Dispatch, FormEvent, JSX, SetStateAction } from "react";
 
 interface IFilterInputProps {
   filter: string;
@@ -41,9 +33,7 @@ const FilterInput = ({
         value={filter}
         onChange={onChange}
       >
-        <option value="0" disabled>
-          فیلتر بر اساس ...
-        </option>
+        <option value="">فیلتر بر اساس ...</option>
         <option
           value="bestView"
           className=" cursor-pointer !py-0.5 text-xs md:text-sm"

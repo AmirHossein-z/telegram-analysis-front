@@ -31,6 +31,8 @@ const MainDashboard = () => {
         axiosPrivate,
         pageInfo.currentPage,
         parseInt(auth.userId),
+        "",
+        "",
         controller
       );
       setPageInfo({

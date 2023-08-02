@@ -6,7 +6,7 @@ const CardTags = ({ tags }: { tags: string }): JSX.Element => {
       {tags?.split(",").map((tag) => (
         <Link
           key={tag}
-          to={`/tags/${tag.substring(1)}`}
+          to={`/dashboard/tags?tagName=${tag.substring(1)}`}
           className="text-xs sm:text-sm"
           style={{ direction: "ltr" }}
         >

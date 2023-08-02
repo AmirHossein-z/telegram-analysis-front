@@ -12,6 +12,7 @@ const mapToPersian: { [key: string]: string } = {
   tags: "تگ ها",
   edit: "ویرایش",
   add_channel: "افزودن کانال",
+  posts: "پست‌ها",
 };
 
 const BreadCrumbs = (): JSX.Element => {

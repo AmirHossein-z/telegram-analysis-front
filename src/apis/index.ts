@@ -90,10 +90,11 @@ export const getChannels = async (
   page = 1,
   user_id: number,
   filter: string,
+  tagName = "",
   controller?: AbortController
 ) => {
   return await axiosPrivate.get(
-    `channels/${user_id}?page=${page}&filter=${filter}`,
+    `channels/${user_id}?page=${page}&filter=${filter}&tagName=${tagName}`,
     {
       signal: controller?.signal,
     }
@@ -239,6 +240,16 @@ export const getPostsStat = async (
   controller: AbortController
 ) => {
   return await axiosPrivate.get(`dashboard/post/stat/${channelId}`, {
+    signal: controller.signal,
+  });
+};
+
+export const getTags = async (
+  axiosPrivate: AxiosInstance,
+  userId: number,
+  controller: AbortController
+) => {
+  return await axiosPrivate.get(`dashboard/tags/all/${userId}`, {
     signal: controller.signal,
   });
 };
