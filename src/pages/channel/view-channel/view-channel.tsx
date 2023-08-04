@@ -1,7 +1,7 @@
 import { JSX, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getChannel } from "../../../apis";
-import { useAbortController, useApiPrivate } from "../../../hooks";
+import { useAxiosPrivate } from "../../../hooks";
 import { AiFillEye } from "react-icons/ai";
 import { BsFillShareFill } from "react-icons/bs";
 import { FaUserAlt } from "react-icons/fa";
@@ -22,9 +22,6 @@ enum ChannelType {
 
 const ViewChannel = (): JSX.Element => {
   const { channelId = "" } = useParams();
-  const [loading, setLoading] = useState(true);
-  const axiosPrivate = useApiPrivate();
-  const { controller, setSignal } = useAbortController(false);
   const [channel, setChannel] = useState<IChannel>({
     channel_date_created: "",
     channel_date_updated: "",
@@ -40,26 +37,17 @@ const ViewChannel = (): JSX.Element => {
     type: "",
   });
 
-  const getChannelById = async () => {
-    try {
-      setLoading(true);
-      const { data } = await getChannel(axiosPrivate, channelId, controller);
-      setChannel(data.value[0]);
-      setLoading(false);
-    } catch (err: any) {
-      console.log(err);
-      setLoading(false);
-    }
-  };
+  const {
+    fetchData: getChannelById,
+    loading,
+    response,
+  } = useAxiosPrivate(getChannel(channelId));
 
   useEffect(() => {
-    getChannelById();
-
-    return () => {
-      setLoading(false);
-      setSignal(true);
-    };
-  }, []);
+    if (response !== null) {
+      setChannel(response?.value[0]);
+    }
+  }, [response]);
 
   if (loading) {
     return <p className="loading loading-spinner loading-lg"></p>;

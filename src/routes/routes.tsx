@@ -5,7 +5,6 @@ import { DashboardLayout } from "../layouts";
 import {
   AddChannel,
   Channels,
-  EditProfile,
   ErrorBoundary,
   Login,
   MainDashboard,
@@ -13,12 +12,11 @@ import {
   PostList,
   Profile,
   Register,
-  ResetPassword,
   Tags,
   ViewChannel,
   ViewPost,
+  Main,
 } from "../pages";
-import { Main } from "../pages/main";
 
 const dashboardSections = [
   {
@@ -41,30 +39,6 @@ const dashboardSections = [
           <title>پروفایل</title>
         </Helmet>
         <Profile />
-      </>
-    ),
-    errorElement: <ErrorBoundary />,
-  },
-  {
-    path: "/dashboard/profile/edit",
-    element: (
-      <>
-        <Helmet>
-          <title>ویرایش پروفایل</title>
-        </Helmet>
-        <EditProfile />
-      </>
-    ),
-    errorElement: <ErrorBoundary />,
-  },
-  {
-    path: "/dashboard/profile/reset-password",
-    element: (
-      <>
-        <Helmet>
-          <title>تغییر رمز عبور</title>
-        </Helmet>
-        <ResetPassword />
       </>
     ),
     errorElement: <ErrorBoundary />,
@@ -175,7 +149,14 @@ const pages = [
   },
   {
     path: "/dashboard",
-    element: <DashboardLayout />,
+    element: (
+      <>
+        <Helmet>
+          <title>ورود</title>
+        </Helmet>
+        <DashboardLayout />,
+      </>
+    ),
     errorElement: <ErrorBoundary />,
     children: [...dashboardSections],
   },

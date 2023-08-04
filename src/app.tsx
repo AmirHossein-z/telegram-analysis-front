@@ -1,11 +1,11 @@
 import { JSX } from "react";
 import { RouterProvider } from "react-router-dom";
-import routes from "./routes/routes.js";
+import { routes } from "./routes";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { AuthProvider } from "./context/auth-provider.js";
+import { AuthProvider } from "./context/auth-provider";
 import { HelmetProvider } from "react-helmet-async";
-import { ErrorBoundary } from "./pages/index.js";
+import { ErrorBoundary } from "./pages";
 
 const App = (): JSX.Element => {
   return (

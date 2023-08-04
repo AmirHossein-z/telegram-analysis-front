@@ -1,5 +1,10 @@
 import axios, { AxiosInstance } from "axios";
-import { IChannelData, IInputData } from "../types";
+import {
+  IAxiosPrivateGet,
+  IAxiosPrivatePost,
+  IChannelData,
+  IInputData,
+} from "../types";
 
 const API_URL = `http://localhost:8000/api/`;
 
@@ -21,7 +26,7 @@ export const axiosPublic = axios.create(config);
 /**
  * used for requests to protected routes
  */
-export const apiPrivate = axios.create(config);
+export const axiosPrivate = axios.create(config);
 
 /**
  * authenticate user for logging to system
@@ -46,7 +51,7 @@ export const createUser = async (data: IInputData) => {
  * @returns refresh access token
  */
 export const getRefreshAccessToken = async () => {
-  const response = await apiPrivate.get("refresh", {
+  const response = await axiosPrivate.get("refresh", {
     // headers: {
     //   Authorization: `Bearer ${prevAccessToken}`,
     // },
@@ -59,9 +64,12 @@ export const getRefreshAccessToken = async () => {
  * @param axiosPrivate
  * @returns
  */
-export const getLogOut = async (axiosPrivate: AxiosInstance) => {
-  return await axiosPrivate.get("dashboard/logout");
+export const getLogOut = (): IAxiosPrivateGet => {
+  return { url: "dashboard/logout", method: "get", runOnMount: false };
 };
+// export const getLogOut = async (axiosPrivate: AxiosInstance) => {
+//   return await axiosPrivate.get("dashboard/logout");
+// };
 
 /**
  * get user info
@@ -69,14 +77,18 @@ export const getLogOut = async (axiosPrivate: AxiosInstance) => {
  * @param controller
  * @returns
  */
-export const getProfile = async (
-  axiosPrivate: AxiosInstance,
-  controller: AbortController
-) => {
-  return await axiosPrivate.get("dashboard/profile", {
-    signal: controller.signal,
-  });
+export const getProfile = (): IAxiosPrivateGet => {
+  return { url: "dashboard/profile", method: "get" };
 };
+
+// export const getProfile = async (
+//   axiosPrivate: AxiosInstance,
+//   controller: AbortController
+// ) => {
+//   return await axiosPrivate.get("dashboard/profile", {
+//     signal: controller.signal,
+//   });
+// };
 
 /**
  * get all channels belonged to specific user
@@ -85,21 +97,39 @@ export const getProfile = async (
  * @param controller
  * @returns
  */
-export const getChannels = async (
-  axiosPrivate: AxiosInstance,
+export const getChannels = (
   page = 1,
   user_id: number,
   filter: string,
-  tagName = "",
-  controller?: AbortController
-) => {
-  return await axiosPrivate.get(
-    `channels/${user_id}?page=${page}&filter=${filter}&tagName=${tagName}`,
-    {
-      signal: controller?.signal,
-    }
-  );
+  tagName = ""
+): IAxiosPrivateGet => {
+  return {
+    method: "get",
+    // url: `channels/${user_id}?page=${page}&filter=${filter}&tagName=${tagName}`,
+    url: `channels/${user_id}`,
+    params: {
+      page: `${page}`,
+      filter,
+      tagName,
+    },
+  };
 };
+
+// export const getChannels = async (
+//   axiosPrivate: AxiosInstance,
+//   page = 1,
+//   user_id: number,
+//   filter: string,
+//   tagName = "",
+//   controller?: AbortController
+// ) => {
+//   return await axiosPrivate.get(
+//     `channels/${user_id}?page=${page}&filter=${filter}&tagName=${tagName}`,
+//     {
+//       signal: controller?.signal,
+//     }
+//   );
+// };
 
 /**
  * add api_id and api_hash info for user
@@ -108,15 +138,24 @@ export const getChannels = async (
  * @param controller
  * @returns
  */
-export const updateApiInfo = async (
-  axiosPrivate: AxiosInstance,
-  data: IChannelData,
-  controller: AbortController
-) => {
-  return await axiosPrivate.post("dashboard/add_api_info", data, {
-    signal: controller.signal,
-  });
+
+export const updateApiInfo = (data: IChannelData): IAxiosPrivatePost => {
+  return {
+    method: "post",
+    url: "dashboard/add_api_info",
+    data,
+    runOnMount: false,
+  };
 };
+// export const updateApiInfo = async (
+//   axiosPrivate: AxiosInstance,
+//   data: IChannelData,
+//   controller: AbortController
+// ) => {
+//   return await axiosPrivate.post("dashboard/add_api_info", data, {
+//     signal: controller.signal,
+//   });
+// };
 
 /**
  * login to telegram to get phone validation from telegram
@@ -189,15 +228,22 @@ export const setChannel = async (
   });
 };
 
-export const getChannel = async (
-  axiosPrivate: AxiosInstance,
-  channelId: string,
-  controller: AbortController
-) => {
-  return await axiosPrivate.get(`dashboard/channel/${channelId}`, {
-    signal: controller.signal,
-  });
+export const getChannel = (channelId: string): IAxiosPrivateGet => {
+  return {
+    method: "get",
+    url: `dashboard/channel/${channelId}`,
+    runOnMount: true,
+  };
 };
+// export const getChannel = async (
+//   axiosPrivate: AxiosInstance,
+//   channelId: string,
+//   controller: AbortController
+// ) => {
+//   return await axiosPrivate.get(`dashboard/channel/${channelId}`, {
+//     signal: controller.signal,
+//   });
+// };
 
 export const getPosts = async (
   axiosPrivate: AxiosInstance,

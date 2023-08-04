@@ -1,10 +1,8 @@
 import { useEffect, JSX, useState, ReactNode, MouseEventHandler } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useAbortController, useApiPrivate } from "../../hooks";
+import { useNavigate } from "react-router-dom";
+import { useAxiosPrivate } from "../../hooks";
 import { getProfile } from "../../apis";
-import { toast } from "react-toastify";
 import { ImMobile } from "react-icons/im";
-import { BiLockAlt } from "react-icons/bi";
 import { RiErrorWarningFill } from "react-icons/ri";
 import { IconBase } from "react-icons";
 
@@ -19,10 +17,8 @@ interface UserInfo {
 }
 
 const Profile = (): JSX.Element => {
-  const axiosPrivate = useApiPrivate();
-  const [loading, setLoading] = useState(true);
+  const { controller, loading, response } = useAxiosPrivate(getProfile());
   const navigate = useNavigate();
-  const location = useLocation();
   const [userInfo, setUserInfo] = useState<UserInfo>({
     name: "",
     created_at: "",
@@ -32,35 +28,22 @@ const Profile = (): JSX.Element => {
     updated_at: "",
     phone: "",
   });
-  const { controller, setSignal } = useAbortController(false);
 
   useEffect(() => {
-    const fetchInfo = async () => {
-      try {
-        setLoading(true);
-        const response = await getProfile(axiosPrivate, controller);
-        setUserInfo(response.data);
-        setLoading(false);
-      } catch (error: any) {
-        if (error?.response?.status === 401) {
-          toast.error("شما وارد نشده اید");
-          navigate("/login", { state: { from: location }, replace: true });
-        }
-        setLoading(false);
-      }
-    };
-    fetchInfo();
+    if (response !== null) {
+      setUserInfo(response);
+    }
 
     return () => {
-      setLoading(false);
-      setSignal(true);
+      controller.abort();
     };
-  }, []);
+  }, [response]);
 
   if (loading) {
     return (
-      <section className="mt-28 flex items-center justify-center">
-        <span className="loading loading-spinner loading-lg text-primary"></span>
+      <section className="mt-20 flex flex-col items-center justify-center gap-1 font-semibold text-primary-focus">
+        <span className="loading loading-dots loading-lg text-primary"></span>
+        در حال دریافت اطلاعات کاربری
       </section>
     );
   }
@@ -84,12 +67,6 @@ const Profile = (): JSX.Element => {
               title="شماره تلفن"
               desc={userInfo.phone}
               Icon={<ImMobile />}
-            />
-            <AccountItem
-              onClick={() => navigate("/dashboard/profile/reset-password")}
-              title="تغییر رمز عبور"
-              desc="***********"
-              Icon={<BiLockAlt />}
             />
           </div>
         </div>

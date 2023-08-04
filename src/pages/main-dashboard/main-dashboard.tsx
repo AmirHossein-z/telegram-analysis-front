@@ -81,6 +81,9 @@ const MainDashboard = () => {
             icon={<AiFillEye />}
           />
         </StatContainer>
+        <h1 className="my-2 text-center text-lg text-secondary">
+          لیست کانال های شما
+        </h1>
         <div className="tabs my-1 flex-nowrap justify-center overflow-x-auto !p-4">
           {channels?.map((channel) => (
             <a

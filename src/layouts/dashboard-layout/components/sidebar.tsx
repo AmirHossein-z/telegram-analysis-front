@@ -1,8 +1,8 @@
-import { Dispatch, JSX, ReactNode, SetStateAction, useContext } from "react";
+import { Dispatch, JSX, SetStateAction, useContext, useEffect } from "react";
 import Aside from "./aside";
 import Navbar from "./navbar";
 import BottomNavigation from "./bottom-navigation";
-import { useApiPrivate, useMediaMatch } from "../../../hooks";
+import { useAxiosPrivate, useMediaMatch } from "../../../hooks";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getLogOut } from "../../../apis";
@@ -14,9 +14,15 @@ interface IProps {
 }
 
 const Sidebar = ({ toggleAside, setToggleAside }: IProps): JSX.Element => {
-  const [match, _] = useMediaMatch(768);
+  const [match] = useMediaMatch(768);
   const location = useLocation();
-  const axiosPrivate = useApiPrivate();
+  const {
+    // loading,
+    response,
+    // error,
+    fetchData: logout,
+  } = useAxiosPrivate(getLogOut());
+  // const axiosPrivate = useApiPrivate();
   const navigate = useNavigate();
   const { setAuth } = useContext(AuthContext);
 
@@ -24,37 +30,13 @@ const Sidebar = ({ toggleAside, setToggleAside }: IProps): JSX.Element => {
     return location.pathname === linkPath;
   };
 
-  const logout = async () => {
-    const id = toast.loading("در حال خروج");
-    try {
-      const response = await getLogOut(axiosPrivate);
-
-      if (response.data.status == "success") {
-        setAuth({ accessToken: "", userId: "" });
-        toast.update(id, {
-          render: response.data?.message,
-          type: "success",
-          isLoading: false,
-          closeOnClick: true,
-          closeButton: true,
-        });
-        navigate("/login");
-      }
-    } catch (error: any) {
-      if (error?.response?.status === 401) {
-        toast.update(id, {
-          render: "شما وارد سامانه نشده اید!",
-          type: "error",
-          isLoading: false,
-          closeOnClick: true,
-          closeButton: true,
-        });
-        navigate("/login");
-      } else {
-        //
-      }
+  useEffect(() => {
+    if (response !== null && response?.status === "success") {
+      setAuth({ accessToken: "", userId: "" });
+      toast.success(response?.message);
+      navigate("/login");
     }
-  };
+  }, [response]);
 
   const userNav = !match ? (
     <BottomNavigation activeStyle={activeStyle} />

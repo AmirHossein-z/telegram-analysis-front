@@ -1,8 +1,7 @@
 import { useContext, useEffect } from "react";
-import { apiPrivate } from "../apis";
+import { axiosPrivate } from "../apis";
 import AuthContext from "../context/auth-provider";
 import { useNavigate } from "react-router-dom";
-// import useRefreshToken from "./use-refresh-token";
 
 const useApiPrivate = () => {
   // const refresh = useRefreshToken();
@@ -10,7 +9,7 @@ const useApiPrivate = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const requestIntercept = apiPrivate.interceptors.request.use(
+    const requestIntercept = axiosPrivate.interceptors.request.use(
       (config) => {
         if (!config.headers["Authorization"]) {
           config.headers["Authorization"] = `Bearer ${auth.accessToken}`;
@@ -19,7 +18,7 @@ const useApiPrivate = () => {
       },
       (error) => Promise.reject(error)
     );
-    const responseIntercept = apiPrivate.interceptors.response.use(
+    const responseIntercept = axiosPrivate.interceptors.response.use(
       (response) => response,
       async (error) => {
         const prevRequest = error?.config;
@@ -38,19 +37,19 @@ const useApiPrivate = () => {
           // setAuth({ ...auth, accessToken: newAccessToken });
           // auth.accessToken = newAccessToken;
           // prevRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
-          return apiPrivate(prevRequest);
+          return axiosPrivate(prevRequest);
         }
         // return Promise.reject(error);
       }
     );
 
     return () => {
-      apiPrivate.interceptors.request.eject(requestIntercept);
-      apiPrivate.interceptors.response.eject(responseIntercept);
+      axiosPrivate.interceptors.request.eject(requestIntercept);
+      axiosPrivate.interceptors.response.eject(responseIntercept);
     };
     // }, [auth.accessToken, refresh]);
   }, [auth.accessToken]);
-  return apiPrivate;
+  return axiosPrivate;
 };
 
 export default useApiPrivate;

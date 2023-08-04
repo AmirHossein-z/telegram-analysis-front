@@ -9,7 +9,7 @@ import {
 import { RiLockPasswordFill } from "react-icons/ri";
 import { IChannelData } from "../../../../types";
 import { getProfile, updateApiInfo } from "../../../../apis";
-import { useAbortController, useApiPrivate } from "../../../../hooks";
+import { useAxiosPrivate } from "../../../../hooks";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -18,39 +18,45 @@ interface IAddApiInfoProps {
   setStep: Dispatch<SetStateAction<number>>;
 }
 
-interface IErrorResponseAddChannel {
-  status: boolean;
-  message: { [key: string]: string }[];
-}
+// interface IErrorResponseAddChannel {
+//   status: boolean;
+//   message: { [key: string]: string }[];
+// }
 
 const AddApiInfo = ({ step, setStep }: IAddApiInfoProps): JSX.Element => {
-  const [loading, setLoading] = useState(false);
-  const [errorFetch, setErrorFetch] = useState<IErrorResponseAddChannel>({
-    status: false,
-    message: [],
-  });
+  // const [loading, setLoading] = useState(false);
+  // const [errorFetch, setErrorFetch] = useState<IErrorResponseAddChannel>({
+  //   status: false,
+  //   message: [],
+  // });
   const [inputData, setInputData] = useState<IChannelData>({
     apiId: "",
     apiHash: "",
   });
-  const axiosPrivate = useApiPrivate();
-  const navigate = useNavigate();
-  const { controller, setSignal } = useAbortController(false);
+  // const axiosPrivate = useApiPrivate();
+  // const navigate = useNavigate();
+  // const { controller, setSignal } = useAbortController(false);
+  const {
+    response: responseProfile,
+    // fetchData,
+    loading: loadingProfile,
+  } = useAxiosPrivate(getProfile());
+  const {
+    fetchData: updateInfo,
+    loading: loadingUpdate,
+    response: responseUpdate,
+  } = useAxiosPrivate(updateApiInfo(inputData));
 
   useEffect(() => {
-    const getUserInfo = async () => {
-      const { data } = await getProfile(axiosPrivate, controller);
-      if (data?.api_id && data?.api_hash) {
+    if (responseProfile !== null) {
+      if (responseProfile.api_id && responseProfile?.api_hash) {
         setStep(3);
       }
-    };
-
-    getUserInfo();
-
-    return () => {
-      setLoading(false);
-      setSignal(true);
-    };
+    }
+    if (responseUpdate !== null) {
+      setStep(3);
+      toast.success("اطلاعات با موفقیت ثبت شد!");
+    }
   }, []);
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -62,46 +68,17 @@ const AddApiInfo = ({ step, setStep }: IAddApiInfoProps): JSX.Element => {
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      setLoading(true);
-      setErrorFetch({
-        ...errorFetch,
-        status: false,
-        message: [],
-      });
-      const { data } = await updateApiInfo(axiosPrivate, inputData, controller);
-      setLoading(false);
-      setInputData({ apiHash: "", apiId: "" });
-      setStep(3);
-      toast.success("اطلاعات با موفقیت ثبت شد!");
-    } catch (error: any) {
-      setLoading(false);
-      if (error?.response?.status === 400) {
-        setErrorFetch({
-          ...errorFetch,
-          status: true,
-          message: error.response.data.message ?? "",
-        });
-      }
-      if (error?.response?.status === 401) {
-        navigate("login");
-      }
-    }
+    updateInfo();
+    setInputData({ apiHash: "", apiId: "" });
   };
 
-  if (errorFetch.status) {
-    for (const obj of errorFetch.message) {
-      for (const key in obj) {
-        if (obj.hasOwnProperty(key)) {
-          toast.error(obj[key]);
-        }
-      }
-    }
-
-    setErrorFetch({
-      message: [],
-      status: false,
-    });
+  if (loadingProfile) {
+    return (
+      <section className="mt-20 flex flex-col items-center justify-center gap-1 font-semibold text-primary-focus">
+        <span className="loading loading-dots loading-lg text-primary"></span>
+        در حال بررسی اطلاعات کاربری
+      </section>
+    );
   }
 
   return (
@@ -155,12 +132,15 @@ const AddApiInfo = ({ step, setStep }: IAddApiInfoProps): JSX.Element => {
           </button>
           <button
             className={`btn-secondary btn-outline btn-wide btn text-base focus:outline-secondary-focus ${
-              loading ? "btn-disabled" : ""
+              loadingUpdate ? "btn-disabled" : ""
             }`}
           >
             ثبت
-            {loading ? (
-              <span className="loading loading-spinner loading-md"></span>
+            {loadingUpdate ? (
+              <div>
+                <span className="loading loading-spinner loading-md"></span>
+                در حال بروز رسانی اطلاعات
+              </div>
             ) : null}
           </button>
         </div>

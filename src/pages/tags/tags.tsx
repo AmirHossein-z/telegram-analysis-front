@@ -112,6 +112,27 @@ const Tags = (): JSX.Element => {
       <section className="flex flex-col  gap-8">
         <div className="mx-auto w-full sm:max-w-lg lg:max-w-4xl">
           <ul className="grid snap-mandatory scroll-px-28 auto-cols-[22%] grid-flow-col gap-5 overflow-x-auto overflow-y-hidden overscroll-x-contain border-b border-b-base-300 border-opacity-50 text-secondary sm:auto-cols-[17%]">
+            <li
+              onClick={(e) => {
+                setSelectedTag("");
+                setSearchParams({
+                  filter,
+                  tagName: "",
+                  page: pageInfo.currentPage.toString(),
+                });
+                (e.target as HTMLLinkElement).scrollIntoView({
+                  behavior: "smooth",
+                  inline: "center",
+                  block: "start",
+                });
+              }}
+              style={{ direction: "ltr" }}
+              className={`lg:text-semibold grid cursor-pointer snap-center items-center justify-center rounded px-2 py-4 text-sm font-normal transition-all duration-200 ease-linear active:text-error ${
+                selectedTag === "" ? "font-semibold text-red-400" : ""
+              }`}
+            >
+              هیچ کدام
+            </li>
             {tags
               ?.map((tag) => tag.tags.split(","))
               .flat(1)

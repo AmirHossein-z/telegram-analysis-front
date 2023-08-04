@@ -1,6 +1,4 @@
-import { CardTags } from ".";
-import CardDesktop from "./card-desktop";
-import CardMobile from "./card-mobile";
+import { CardTags, CardDesktop, CardMobile } from ".";
 import { IChannel, IPost } from "../types";
 
 type ICardListIProps = { list: (IChannel | IPost)[] };

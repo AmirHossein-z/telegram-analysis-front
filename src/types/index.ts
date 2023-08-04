@@ -60,3 +60,20 @@ export interface IPost {
   created_at: string;
   updated_at?: string;
 }
+
+interface IAxiosPrivateBase {
+  url: string;
+  runOnMount?: boolean;
+}
+
+export interface IAxiosPrivateGet extends IAxiosPrivateBase {
+  method: "get";
+  params?: { [key: string]: string };
+}
+
+export interface IAxiosPrivatePost extends IAxiosPrivateBase {
+  method: "post";
+  data: any;
+}
+
+export type IAxiosPrivate = IAxiosPrivateGet | IAxiosPrivatePost;
