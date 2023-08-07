@@ -61,6 +61,11 @@ const MainDashboard = () => {
   useEffect(() => {
     fetchChannels();
 
+    document.documentElement.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+
     return () => {
       setLoading(false);
       setSignal(true);

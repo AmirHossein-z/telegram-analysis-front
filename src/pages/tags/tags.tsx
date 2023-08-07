@@ -100,6 +100,11 @@ const Tags = (): JSX.Element => {
   };
 
   useEffect(() => {
+    document.documentElement.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+
     fetchChannels();
   }, [selectedTag, pageInfo.currentPage]);
 

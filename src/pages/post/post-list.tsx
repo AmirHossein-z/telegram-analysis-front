@@ -1,4 +1,4 @@
-import { useParams, useSearchParams } from "react-router-dom";
+import { useLocation, useParams, useSearchParams } from "react-router-dom";
 import { useAbortController, useApiPrivate } from "../../hooks";
 import { useEffect, useState } from "react";
 import { getPosts } from "../../apis";
@@ -66,6 +66,11 @@ const PostList = (): JSX.Element => {
   useEffect(() => {
     getPostsByChannelId();
 
+    document.documentElement.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+
     return () => {
       setLoading(false);
       setSignal(true);
@@ -87,6 +92,7 @@ const PostList = (): JSX.Element => {
 
   return (
     <>
+      {/* <ScrollToTop /> */}
       <section className="mb-5">
         <FilterInput
           getInfo={getPostsByChannelId}
@@ -111,5 +117,16 @@ const PostList = (): JSX.Element => {
     </>
   );
 };
+
+// const ScrollToTop = () => {
+//   const location = useLocation();
+
+//   useEffect(() => {
+//     window.scrollTo(0, 0);
+//     console.log("test :>> ");
+//   }, [location.pathname, location.search]);
+
+//   return <></>;
+// };
 
 export default PostList;

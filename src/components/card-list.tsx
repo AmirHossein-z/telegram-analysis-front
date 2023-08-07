@@ -43,7 +43,7 @@ const CardList = ({ list }: ICardListIProps) => {
       </section>
 
       {/* desktop */}
-      <section className="hidden md:grid md:grid-cols-2 md:items-center md:justify-center md:gap-3">
+      <section className="hidden md:grid md:grid-cols-2 md:place-items-stretch md:justify-center md:gap-3">
         {list?.map((item) => {
           if ("channel_telegram_id" in item) {
             const channel = item as IChannel;

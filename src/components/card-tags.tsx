@@ -7,7 +7,7 @@ const CardTags = ({ tags }: { tags: string }): JSX.Element => {
         <Link
           key={tag}
           to={`/dashboard/tags?tagName=${tag.substring(1)}`}
-          className="text-xs sm:text-sm"
+          className="z-10 text-xs sm:text-sm"
           style={{ direction: "ltr" }}
         >
           {tag}

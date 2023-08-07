@@ -45,6 +45,11 @@ const Channels = (): JSX.Element => {
   }, [response]);
 
   useEffect(() => {
+    document.documentElement.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+
     getInfo();
   }, [pageInfo.currentPage]);
 

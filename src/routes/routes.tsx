@@ -20,7 +20,7 @@ import {
 
 const dashboardSections = [
   {
-    path: "/dashboard",
+    path: "",
     element: (
       <>
         <Helmet>
@@ -32,7 +32,7 @@ const dashboardSections = [
     errorElement: <ErrorBoundary />,
   },
   {
-    path: "/dashboard/profile",
+    path: "profile",
     element: (
       <>
         <Helmet>
@@ -44,7 +44,7 @@ const dashboardSections = [
     errorElement: <ErrorBoundary />,
   },
   {
-    path: "/dashboard/channels",
+    path: "channels",
     element: (
       <>
         <Helmet>
@@ -56,7 +56,7 @@ const dashboardSections = [
     errorElement: <ErrorBoundary />,
   },
   {
-    path: "/dashboard/channels/:channelId",
+    path: "channels/:channelId",
     element: (
       <>
         <Helmet>
@@ -68,7 +68,7 @@ const dashboardSections = [
     errorElement: <ErrorBoundary />,
   },
   {
-    path: "/dashboard/add_channel",
+    path: "add_channel",
     element: (
       <>
         <Helmet>
@@ -80,12 +80,12 @@ const dashboardSections = [
     errorElement: <ErrorBoundary />,
   },
   {
-    path: "/dashboard/channels/:channelId/posts",
+    path: "channels/:channelId/posts",
     element: <PostList />,
     errorElement: <ErrorBoundary />,
   },
   {
-    path: "/dashboard/channels/:channelId/posts/:postId",
+    path: "channels/:channelId/posts/:postId",
     element: (
       <>
         <Helmet>
@@ -97,7 +97,7 @@ const dashboardSections = [
     errorElement: <ErrorBoundary />,
   },
   {
-    path: "/dashboard/tags",
+    path: "tags",
     element: (
       <>
         <Helmet>
@@ -148,17 +148,17 @@ const pages = [
     errorElement: <ErrorBoundary />,
   },
   {
-    path: "/dashboard",
+    path: "/dashboard/*",
     element: (
       <>
         <Helmet>
-          <title>ورود</title>
+          <title></title>
         </Helmet>
         <DashboardLayout />,
       </>
     ),
     errorElement: <ErrorBoundary />,
-    children: [...dashboardSections],
+    children: dashboardSections,
   },
 ];
 

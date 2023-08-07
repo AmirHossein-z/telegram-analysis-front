@@ -15,7 +15,7 @@ const App = (): JSX.Element => {
           <RouterProvider router={routes} />
           <ToastContainer
             position="top-center"
-            autoClose={4000}
+            autoClose={3000}
             hideProgressBar={false}
             newestOnTop={false}
             closeOnClick
@@ -23,7 +23,7 @@ const App = (): JSX.Element => {
             pauseOnFocusLoss
             draggable
             pauseOnHover
-            theme="dark"
+            theme="light"
           />
         </HelmetProvider>
       </AuthProvider>

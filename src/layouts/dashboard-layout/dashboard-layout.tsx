@@ -7,7 +7,7 @@ import { JSX } from "react";
 import { ProtectedRoute } from "../../routes";
 
 const DashboardLayout = (): JSX.Element => {
-  const [toggleAside, setToggleAside] = useState<boolean>(false);
+  const [toggleAside, setToggleAside] = useState(false);
   const [match] = useMediaMatch(768);
 
   useEffect(() => {
