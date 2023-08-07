@@ -23,9 +23,9 @@ const Channels = (): JSX.Element => {
     loading,
     response,
     fetchData: getInfo,
-    // error,
+    error,
   } = useAxiosPrivate(
-    getChannels(pageInfo.currentPage, parseInt(auth.userId), filter, "")
+    getChannels(pageInfo.currentPage, parseInt(auth.userId, 10), filter, "")
   );
 
   useEffect(() => {
@@ -55,6 +55,14 @@ const Channels = (): JSX.Element => {
 
   if (loading) {
     return <p className="loading loading-spinner loading-lg"></p>;
+  }
+
+  if (error) {
+    return (
+      <section className="mt-20 flex flex-col items-center justify-center gap-1 font-semibold text-primary-focus">
+        مشکلی پیش آمده است
+      </section>
+    );
   }
 
   // has channels

@@ -30,9 +30,7 @@ const Pagination = ({
       currentPage,
       totalCount,
       siblingCount,
-      onPageChange: (newPage) => {
-        // console.log(`Page changed to ${newPage}`);
-      },
+      onPageChange: (newPage) => {},
       pageSize,
     }) ?? [];
 
@@ -54,7 +52,9 @@ const Pagination = ({
   return (
     <ul className="join flex justify-center" style={{ direction: "ltr" }}>
       <li
-        className={`join-item btn ${currentPage === 1 ? "btn-disabled" : ""}`}
+        className={`btn-neutral join-item btn ${
+          currentPage === 1 ? "btn-disabled" : ""
+        }`}
         onClick={onPrevious}
       >
         {PREVIOUS}
@@ -63,7 +63,10 @@ const Pagination = ({
         // If the pageItem is a DOT, render the DOTS unicode character
         if (pageNumber === DOTS) {
           return (
-            <li className="btn-disabled join-item btn" key={key + index}>
+            <li
+              className="btn-disabled btn-neutral join-item btn"
+              key={key + index}
+            >
               ...
             </li>
           );
@@ -73,8 +76,8 @@ const Pagination = ({
         return (
           <li
             key={key + index}
-            className={`join-item btn ${
-              pageNumber === currentPage ? "bg-primary" : ""
+            className={`btn-neutral join-item btn ${
+              pageNumber === currentPage ? "btn-warning" : ""
             }`}
             onClick={() => {
               if (typeof pageNumber === "string") {
@@ -90,7 +93,7 @@ const Pagination = ({
       })}
       {/*  Right Navigation arrow */}
       <li
-        className={`join-item btn ${
+        className={`btn-neutral join-item btn ${
           currentPage === lastPage ? "btn-disabled" : ""
         }`}
         onClick={onNext}

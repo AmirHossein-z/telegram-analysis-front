@@ -14,7 +14,7 @@ const BottomNavigation = ({ activeStyle }: IProps): JSX.Element => {
 
   return (
     <>
-      <div className="btm-nav border-t border-primary-content border-opacity-20 shadow-bg">
+      <div className="btm-nav z-30 border-t border-primary-content border-opacity-20 shadow-bg">
         <button
           onClick={() => navigate("/dashboard")}
           className={`${

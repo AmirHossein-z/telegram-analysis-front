@@ -16,13 +16,7 @@ interface IProps {
 const Sidebar = ({ toggleAside, setToggleAside }: IProps): JSX.Element => {
   const [match] = useMediaMatch(768);
   const location = useLocation();
-  const {
-    // loading,
-    response,
-    // error,
-    fetchData: logout,
-  } = useAxiosPrivate(getLogOut());
-  // const axiosPrivate = useApiPrivate();
+  const { response, fetchData: logout } = useAxiosPrivate(getLogOut());
   const navigate = useNavigate();
   const { setAuth } = useContext(AuthContext);
 

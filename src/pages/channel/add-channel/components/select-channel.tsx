@@ -7,9 +7,8 @@ import {
   useState,
 } from "react";
 import { getAllUserChannelsHas, setChannel } from "../../../../apis";
-import { useAbortController, useApiPrivate } from "../../../../hooks";
+import { useAxiosPrivate } from "../../../../hooks";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
 
 interface IchannelInfo {
   id: number;
@@ -21,85 +20,57 @@ interface IProps {
 }
 
 const SelectChannel = ({ setStep }: IProps) => {
-  const axiosPrivate = useApiPrivate();
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
   const [channels, setChannels] = useState<IchannelInfo[]>([]);
   const [selectChannel, setSelectChannel] = useState({ channelId: "" });
-  const { controller, setSignal } = useAbortController(false);
-
-  const getAllChannels = async () => {
-    try {
-      setLoading(true);
-      const { data } = await getAllUserChannelsHas(axiosPrivate, controller);
-      setChannels(data?.value);
-      setLoading(false);
-    } catch (error: any) {
-      setLoading(false);
-      if (error?.response?.status === 400 || error?.response?.status === 401) {
-        toast.warn("مشکلی پیش آمده است بعدا تلاش کنید");
-      }
-      if (error?.response?.status === 401) {
-        navigate("/login");
-      }
-    }
-  };
+  const {
+    loading: loadingFetch,
+    response: responseFetch,
+    error: errorFetch,
+    fetchData: getAllChannels,
+  } = useAxiosPrivate(getAllUserChannelsHas());
+  const {
+    loading: loadingSubmit,
+    response: responseSubmit,
+    fetchData: submitChannel,
+    error: errorSubmit,
+  } = useAxiosPrivate(setChannel(selectChannel));
 
   useEffect(() => {
-    getAllChannels();
-    return () => {
-      setLoading(false);
-      setSignal(true);
-    };
-  }, []);
+    if (responseFetch !== null) {
+      setChannels(responseFetch?.value);
+    }
+  }, [responseFetch]);
+
+  useEffect(() => {
+    if (responseSubmit !== null) {
+      setStep(5);
+      toast.success("اطلاعات کانال با موفقیت ثبت شد");
+    }
+  }, [responseSubmit]);
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    try {
-      setLoading(true);
-      const { data } = await setChannel(
-        axiosPrivate,
-        selectChannel,
-        controller
-      );
-      setLoading(false);
-      setStep(5);
-      toast.success("اطلاعات کانال با موفقیت ثبت شد");
-    } catch (error: any) {
-      setLoading(false);
-      if (error?.response?.status === 400 || error?.response?.status === 401) {
-        toast.warn("مشکلی پیش آمده است بعدا تلاش کنید");
-      }
-      if (error?.response?.status === 401) {
-        navigate("/login");
-      }
-    }
+    await submitChannel();
   };
 
   const onChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setSelectChannel({ channelId: e.target.value });
   };
 
-  if (loading) {
+  if (loadingFetch) {
     return (
       <div className="flex w-full flex-col items-center justify-center gap-5">
         <span className="loading loading-dots loading-lg"></span>
         <p>لطفا قندشکن خود را روشن نگه دارید و صبور باشید!</p>
       </div>
     );
-  } else if (channels.length === 0) {
+  }
+
+  if (errorFetch || errorSubmit) {
     return (
-      <div className="flex flex-col items-center justify-center gap-2">
-        <button
-          type="button"
-          onClick={getAllChannels}
-          className="btn-accent btn"
-        >
-          تلاش دوباره برای گفتن اطلاعات کانال ها
-        </button>
-        <p>لطفا از روشن بودن قندشکن خود اطمینان حاصل کنید</p>
-      </div>
+      <section className="mt-20 flex flex-col items-center justify-center gap-1 font-semibold text-primary-focus">
+        مشکلی پیش آمده است
+      </section>
     );
   }
 
@@ -136,11 +107,18 @@ const SelectChannel = ({ setStep }: IProps) => {
 
         <div className="flex justify-center">
           <button
+            disabled={loadingSubmit}
             className={`btn-secondary btn-outline btn-wide btn text-base focus:outline-secondary-focus ${
-              loading ? "btn-disabled" : ""
+              loadingSubmit ? "btn-disabled" : ""
             }`}
           >
-            انتخاب
+            {loadingSubmit ? (
+              <div>
+                <span className="loading loading-spinner loading-md"></span>
+              </div>
+            ) : (
+              <>انتخاب</>
+            )}
           </button>
         </div>
 

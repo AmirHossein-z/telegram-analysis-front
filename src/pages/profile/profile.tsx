@@ -34,9 +34,9 @@ const Profile = (): JSX.Element => {
       setUserInfo(response);
     }
 
-    return () => {
-      controller.abort();
-    };
+    // return () => {
+    //   controller.abort();
+    // };
   }, [response]);
 
   if (loading) {
@@ -49,14 +49,14 @@ const Profile = (): JSX.Element => {
   }
   return (
     <section className="">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center">
         <h1 className="text-base sm:text-lg">{userInfo.name}</h1>
-        <button
+        {/* <button
           className="btn-secondary btn-sm btn rounded md:btn-md"
           onClick={() => navigate("/dashboard/profile/edit")}
         >
           ویرایش پروفایل
-        </button>
+        </button> */}
       </div>
       <div className="divider md:my-3"></div>
       <div className="flex-wrap justify-between gap-6 md:flex md:items-baseline">

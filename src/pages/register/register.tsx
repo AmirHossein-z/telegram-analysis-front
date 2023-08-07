@@ -11,8 +11,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { BsTelephoneFill } from "react-icons/bs";
 import { createUser } from "../../apis";
-import { IErrorResponseReg, IInputData } from "../../types";
+import { IInputData } from "../../types";
 import { toast } from "react-toastify";
+import { useAxiosPrivate } from "../../hooks";
 
 const Register = (): JSX.Element => {
   const [inputData, setInputData] = useState<IInputData>({
@@ -22,65 +23,39 @@ const Register = (): JSX.Element => {
     name: "",
   });
   const emailRef = useRef<HTMLInputElement | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [errorFetch, setErrorFetch] = useState<IErrorResponseReg>({
-    status: false,
-    // message: { email: "", password: "", phone: "" },
-    message: [],
-  });
+  const navigate = useNavigate();
+  const {
+    loading,
+    fetchData: registerSubmit,
+    error,
+    response,
+  } = useAxiosPrivate(createUser(inputData));
 
   useEffect(() => {
     emailRef.current?.focus();
   }, []);
 
-  const navigate = useNavigate();
-
-  const onSubmit = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
-    event.preventDefault();
-
-    try {
-      setLoading(true);
-      setErrorFetch({
-        ...errorFetch,
-        status: false,
-        message: [],
-      });
-      const { status } = await createUser(inputData);
-      if (status === 200) {
-        setLoading(false);
+  useEffect(() => {
+    if (response !== null) {
+      if (response.status === "success") {
         setInputData({ email: "", password: "" });
         toast.success("با موفقیت ثبت نام کردید");
         navigate("/login");
       }
-    } catch (error: any) {
-      if (error?.response?.status === 400) {
-        setLoading(false);
-        setErrorFetch({
-          ...errorFetch,
-          status: true,
-          message: error.response.data.message,
-        });
-      }
     }
+  }, [response]);
+
+  const onSubmit = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
+    event.preventDefault();
+    await registerSubmit();
   };
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     setInputData({ ...inputData, [e.target.name]: e.target.value });
   };
 
-  if (errorFetch.status) {
-    for (const obj of errorFetch.message) {
-      for (const key in obj) {
-        if (obj.hasOwnProperty(key)) {
-          toast.error(obj[key]);
-        }
-      }
-    }
-
-    setErrorFetch({
-      status: false,
-      message: [],
-    });
+  if (error) {
+    toast.error("مقادیر را درست وارد نکرده‌اید");
   }
 
   return (
@@ -197,6 +172,7 @@ const Register = (): JSX.Element => {
             </div>
             <div className="flex justify-center">
               <button
+                disabled={loading}
                 className={`btn-secondary btn-outline btn-wide btn text-base focus:outline-secondary-focus $${
                   loading ? "btn-disabled" : ""
                 }`}

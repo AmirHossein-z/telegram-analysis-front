@@ -9,7 +9,7 @@ const CardMobile = (props: ICardProps): JSX.Element => {
   const { id, name, channelTelegramId, view, share, tags, path } = props;
 
   return (
-    <section className="flex cursor-pointer flex-wrap justify-between gap-5 rounded bg-base-100 px-3 py-4 text-base-content shadow-bg transition-all duration-300 ease-linear hover:bg-base-200">
+    <section className="relative flex cursor-pointer flex-wrap justify-between gap-5 rounded bg-base-100 px-3 py-4 text-base-content shadow-bg transition-all duration-300 ease-linear hover:bg-base-200">
       <div className="flex flex-grow flex-col items-start justify-between gap-6">
         <div className="flex flex-col gap-1">
           {name?.length && name.length > 90 ? (

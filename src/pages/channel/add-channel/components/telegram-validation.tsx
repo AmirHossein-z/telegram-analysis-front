@@ -8,9 +8,8 @@ import {
 } from "react";
 import OTPInput from "react-otp-input";
 import { PhoneValidation, postOtp } from "../../../../apis";
-import { useAbortController, useApiPrivate } from "../../../../hooks";
+import { useAxiosPrivate } from "../../../../hooks";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
 
 interface ITelegramValidationProps {
   setStep: Dispatch<SetStateAction<number>>;
@@ -25,104 +24,55 @@ const TelegramValidation = ({
   setStep,
 }: ITelegramValidationProps): JSX.Element => {
   const [otp, setOtp] = useState("");
-  const [loading, setLoading] = useState(true);
-  const axiosPrivate = useApiPrivate();
-  const navigate = useNavigate();
-  const [errorFetch, setErrorFetch] = useState<IErrorResponseOtp>({
-    status: false,
-    message: [],
-  });
-  const { controller, setSignal } = useAbortController(false);
+
+  const {
+    loading: loadingValidation,
+    response: responseValidation,
+    error: errorValidation,
+  } = useAxiosPrivate(PhoneValidation());
+  const {
+    loading: loadingSubmit,
+    response: responseSubmit,
+    error: errorSubmit,
+    fetchData: submitData,
+  } = useAxiosPrivate(postOtp(otp));
 
   useEffect(() => {
-    const getPhoneValidation = async () => {
-      try {
-        setLoading(true);
-        const { data } = await PhoneValidation(axiosPrivate, controller);
-        if (!data?.status) {
-          setStep(4);
-        }
-        // if (!data.status) {
-        //   toast.warn(data.value);
-        //   setStep(2);
-        // }
-        setLoading(false);
-        // setErrorFetch({
-        //   ...errorFetch,
-        //   status: false,
-        //   message: [],
-        // });
-        // setInputData({ apiHash: "", apiId: "", userId: 0 });
-      } catch (error: any) {
-        setLoading(false);
-        if (
-          error?.response?.status === 400 ||
-          error?.response?.status === 401
-        ) {
-          // setErrorFetch({
-          //   ...errorFetch,
-          //   status: true,
-          //   message: error.response.data.message ?? "",
-          // });
-        }
-        if (error?.response?.status === 401) {
-          navigate("login");
-        }
+    if (responseValidation !== null) {
+      if (!responseValidation?.status) {
+        setStep(4);
       }
-    };
-    getPhoneValidation();
-    return () => {
-      setLoading(false);
-      setSignal(true);
-    };
-  }, []);
+    }
+  }, [responseValidation]);
+
+  useEffect(() => {
+    if (responseSubmit !== null) {
+      setStep(4);
+      toast.success("ورود انجام شد");
+    }
+  }, [responseSubmit]);
+
+  if (loadingValidation) {
+    return (
+      <div className="flex w-full flex-col items-center justify-center gap-5">
+        <span className="loading loading-dots loading-lg"></span>
+        <p>در حال ورود به حساب...</p>
+      </div>
+    );
+  }
+
+  if (errorValidation || errorSubmit) {
+    return (
+      <section className="mt-20 flex flex-col items-center justify-center gap-1 font-semibold text-primary-focus">
+        مشکلی پیش آمده است
+      </section>
+    );
+  }
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      setLoading(true);
-      setErrorFetch({
-        ...errorFetch,
-        status: false,
-        message: [],
-      });
-      const { data } = await postOtp(axiosPrivate, { otp: otp }, controller);
-      setLoading(false);
-      setStep(4);
-      toast.success("ورود انجام شد");
-    } catch (error: any) {
-      console.log("error :>> ", error);
-      setLoading(false);
-      if (error?.response?.status === 400) {
-        setErrorFetch({
-          ...errorFetch,
-          status: true,
-          message: error.response.data.message ?? "",
-        });
-      }
-      if (error?.response?.status === 401) {
-        navigate("login");
-      }
-    }
+    submitData();
   };
-
-  if (errorFetch.status) {
-    for (const obj of errorFetch.message) {
-      for (const key in obj) {
-        if (obj.hasOwnProperty(key)) {
-          toast.error(obj[key]);
-        }
-      }
-    }
-
-    setErrorFetch({
-      message: [],
-      status: false,
-    });
-  }
-  if (loading) {
-    return <div className="loading loading-dots loading-lg"></div>;
-  }
 
   return (
     <form
@@ -151,7 +101,10 @@ const TelegramValidation = ({
       />
       <button
         type="submit"
-        className="btn-secondary btn-outline btn-wide btn text-base focus:outline-secondary-focus"
+        disabled={loadingSubmit}
+        className={`btn-secondary btn-outline btn-wide btn text-base focus:outline-secondary-focus ${
+          loadingSubmit ? "btn-disabled" : ""
+        }`}
       >
         ثبت
       </button>

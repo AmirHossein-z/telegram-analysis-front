@@ -1,7 +1,7 @@
 import { JSX, useEffect, useState } from "react";
 import { IconContext } from "react-icons";
 import { useParams } from "react-router-dom";
-import { useAbortController, useApiPrivate } from "../../../hooks";
+import { useAxiosPrivate } from "../../../hooks";
 import { getPost } from "../../../apis";
 import { IPost } from "../../../types";
 import { StatContainer } from "../../../containers";
@@ -18,9 +18,6 @@ import { formatNumber, getJalaliDate, getRelativeDate } from "../../../utils";
 
 const ViewPost = (): JSX.Element => {
   const { postId = "" } = useParams();
-  const [loading, setLoading] = useState(true);
-  const axiosPrivate = useApiPrivate();
-  const { controller, setSignal } = useAbortController(false);
   const [post, setPost] = useState<IPost>({
     channel_id: 0,
     created_at: "",
@@ -32,36 +29,28 @@ const ViewPost = (): JSX.Element => {
     updated_at: "",
     view: 0,
   });
-
-  const getPostById = async () => {
-    try {
-      setLoading(true);
-      const { data } = await getPost(axiosPrivate, postId, controller);
-      setPost(data.value[0]);
-      setLoading(false);
-    } catch (err: any) {
-      // post nadasht yani momke karbar dasti url zade bashe bas redirect beshe be posts ha
-      console.log(err);
-      setLoading(false);
-    }
-  };
+  const { loading, response, error } = useAxiosPrivate(getPost(postId));
 
   useEffect(() => {
-    getPostById();
-
-    return () => {
-      setLoading(false);
-      setSignal(true);
-    };
-  }, []);
+    if (response !== null) {
+      setPost(response.value[0]);
+    }
+  }, [response]);
 
   if (loading) {
-    return <p className="loading loading-spinner loading-lg"></p>;
-  } else if (post?.id === 0) {
     return (
-      <button className="btn-secondary btn" onClick={getPostById}>
-        لود دوباره
-      </button>
+      <section className="mt-20 flex flex-col items-center justify-center gap-1 font-semibold text-primary-focus">
+        <span className="loading loading-dots loading-lg text-primary"></span>
+        در حال دریافت پست
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="mt-20 flex flex-col items-center justify-center gap-1 font-semibold text-primary-focus">
+        <p>مشکلی پیش آمده است</p>
+      </section>
     );
   }
 
@@ -99,12 +88,6 @@ const ViewPost = (): JSX.Element => {
             <p className="text-base-content-100 text-justify text-sm font-normal">
               {post.details}
             </p>
-            {/* {name?.length && name.length > 90 ? ( <h2 className="card-body text-justify font-normal">
-            {name.trim().substring(0, 90)}...
-          </h2>
-        ) : (
-          <h2 className="card-title text-base font-normal">{name?.trim()}</h2>
-        )} */}
           </div>
           <CardTags tags={post.tags} />
         </div>

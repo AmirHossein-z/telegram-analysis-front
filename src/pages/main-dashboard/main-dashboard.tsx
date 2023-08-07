@@ -3,60 +3,42 @@ import { Charts, Top10Posts } from "./components";
 import { Pagination, Stat } from "../../components";
 import { getChannels } from "../../apis";
 import { useSearchParams } from "react-router-dom";
-import { useAbortController, useApiPrivate } from "../../hooks";
 import AuthContext from "../../context/auth-provider";
 import { IChannel } from "../../types";
 import { StatContainer } from "../../containers";
 import { AiFillEye } from "react-icons/ai";
+import { useAxiosPrivate } from "../../hooks";
 
 const MainDashboard = () => {
-  const axiosPrivate = useApiPrivate();
-  const [loading, setLoading] = useState(true);
   const [channels, setChannels] = useState<IChannel[]>([]);
   const { auth } = useContext(AuthContext);
-  const { controller, setSignal } = useAbortController(false);
-  const [searchParams, setSearchParams] = useSearchParams({});
+  const [searchParams] = useSearchParams({});
   const [pageInfo, setPageInfo] = useState({
     pageSize: 0,
     totalCount: 0,
     currentPage: parseInt(searchParams.get("page") ?? "", 10) || 1,
   });
   const [activeTab, setActiveTab] = useState(0);
-
-  const fetchChannels = async () => {
-    try {
-      setSearchParams({ page: pageInfo.currentPage.toString() });
-      setLoading(true);
-      const { data } = await getChannels(
-        axiosPrivate,
-        pageInfo.currentPage,
-        parseInt(auth.userId),
-        "",
-        "",
-        controller
-      );
-      setPageInfo({
-        ...pageInfo,
-        pageSize: data.value?.per_page,
-        totalCount: data.value?.total,
-        currentPage: data.value?.current_page,
-      });
-      setChannels(data.value?.data);
-      setLoading(false);
-    } catch (err) {
-      console.log(err);
-      setLoading(false);
-    }
-  };
+  const {
+    fetchData: fetchChannels,
+    loading,
+    response,
+    error,
+  } = useAxiosPrivate(
+    getChannels(pageInfo.currentPage, parseInt(auth.userId, 10), "", "")
+  );
 
   useEffect(() => {
-    fetchChannels();
-
-    return () => {
-      setLoading(false);
-      setSignal(true);
-    };
-  }, []);
+    if (response !== null) {
+      setChannels(response.value?.data);
+      setPageInfo({
+        ...pageInfo,
+        pageSize: response.value?.per_page,
+        totalCount: response.value?.total,
+        currentPage: response.value?.current_page,
+      });
+    }
+  }, [response]);
 
   useEffect(() => {
     fetchChannels();
@@ -65,16 +47,20 @@ const MainDashboard = () => {
       behavior: "smooth",
       block: "start",
     });
-
-    return () => {
-      setLoading(false);
-      setSignal(true);
-    };
   }, [pageInfo.currentPage]);
 
   if (loading) {
     return <p className="loading loading-spinner loading-lg"></p>;
   }
+
+  if (error) {
+    return (
+      <section className="mt-20 flex flex-col items-center justify-center gap-1 font-semibold text-primary-focus">
+        مشکلی پیش آمده است
+      </section>
+    );
+  }
+
   // has channels
   else if (channels?.length > 0) {
     return (
@@ -117,9 +103,9 @@ const MainDashboard = () => {
         />
       </>
     );
-  } else {
-    return <p>شما در حال حاضر کانالی ندارید</p>;
   }
+
+  return <p>شما در حال حاضر کانالی ندارید</p>;
 };
 
 export default MainDashboard;

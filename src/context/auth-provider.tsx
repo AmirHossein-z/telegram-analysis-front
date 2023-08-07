@@ -13,10 +13,6 @@ interface IAuthContextValue {
 interface IProps {
   children: ReactNode;
 }
-// const initialState: IAuth = {
-//   accessToken: "",
-//   setAuth: () => {},
-// };
 
 const AuthContext = createContext<IAuthContextValue>({
   auth: { accessToken: "", userId: "" },

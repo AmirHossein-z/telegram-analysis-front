@@ -2,7 +2,7 @@
 
 import { useEffect, useState, JSX } from "react";
 import { getTop10 } from "../../../apis";
-import { useAbortController, useApiPrivate } from "../../../hooks";
+import { useAxiosPrivate } from "../../../hooks";
 import { IPost } from "../../../types";
 import { CardList } from "../../../components";
 
@@ -13,40 +13,41 @@ interface ITop {
 
 const Top10Posts = ({ channelId }: { channelId: number }): JSX.Element => {
   const [selectTop10, setSelectTop10] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const axiosPrivate = useApiPrivate();
-  const { controller, setSignal } = useAbortController(false);
   const [top, setTop] = useState<ITop>({ view: [], share: [] });
+  const {
+    loading,
+    response,
+    error,
+    fetchData: fetchTop10,
+  } = useAxiosPrivate(getTop10(channelId));
 
-  const fetchTop10 = async () => {
-    try {
-      setLoading(true);
-      const { data } = await getTop10(axiosPrivate, channelId, controller);
-      setTop({ view: data?.value?.view, share: data?.value?.share });
-      setLoading(false);
-    } catch (err) {
-      console.log(err);
-      setLoading(false);
+  useEffect(() => {
+    if (response !== null) {
+      setTop({ view: response?.value?.view, share: response?.value?.share });
     }
-  };
+  }, [response]);
 
   useEffect(() => {
     fetchTop10();
-
-    return () => {
-      setLoading(false);
-      setSignal(true);
-    };
-  }, []);
-
-  useEffect(() => {
-    fetchTop10();
-
-    return () => {
-      setLoading(false);
-      setSignal(true);
-    };
   }, [channelId]);
+
+  if (loading) {
+    return (
+      <section className="mt-8 flex flex-col items-center justify-center gap-1 font-semibold text-primary-focus">
+        <span className="loading loading-dots loading-lg text-primary"></span>
+        در حال دریافت برترین پست‌ها
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="mt-8 flex flex-col items-center justify-center gap-1 font-semibold text-primary-focus">
+        <span className="loading loading-dots loading-lg text-primary"></span>
+        در حال دریافت برترین پست‌ها
+      </section>
+    );
+  }
 
   return (
     <>

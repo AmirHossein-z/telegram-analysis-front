@@ -37,7 +37,7 @@ const BreadCrumbs = (): JSX.Element => {
       className="breadcrumbs mb-4 text-sm sm:text-base"
       style={{ direction: "ltr" }}
     >
-      <ul>{crumbs}</ul>
+      <ul className="flex-wrap gap-y-2">{crumbs}</ul>
     </section>
   );
 };

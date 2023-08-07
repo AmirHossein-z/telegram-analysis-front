@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useAbortController, useApiPrivate } from "../../../hooks";
+import { useAxiosPrivate } from "../../../hooks";
 import { IPost } from "../../../types";
 import { getPostsStat } from "../../../apis";
 import { Line } from "react-chartjs-2";
@@ -61,16 +61,33 @@ interface IData {
 }
 
 const Charts = ({ channelId }: { channelId: number }) => {
-  const [_, setLoading] = useState(false);
-  const axiosPrivate = useApiPrivate();
-  const { controller, setSignal } = useAbortController(false);
   const [data, setData] = useState<IData>({
     view: [],
     share: [],
     created_at: [],
   });
+  const {
+    loading,
+    response,
+    error,
+    fetchData: fetchStat,
+  } = useAxiosPrivate(getPostsStat(channelId));
   const chartsData = aggregateViewShare(data);
   const dateData = aggregateDate(data);
+
+  useEffect(() => {
+    if (response !== null) {
+      setData({
+        view: response?.value?.view,
+        share: response?.value?.share,
+        created_at: response?.value?.date,
+      });
+    }
+  }, [response]);
+
+  useEffect(() => {
+    fetchStat();
+  }, [channelId]);
 
   const viewData = {
     labels: chartsData.view.map((item) => item.date),
@@ -116,44 +133,22 @@ const Charts = ({ channelId }: { channelId: number }) => {
     ],
   };
 
-  const fetchStat = async () => {
-    try {
-      setLoading(true);
-      const { data: postStat } = await getPostsStat(
-        axiosPrivate,
-        channelId,
-        controller
-      );
+  if (loading) {
+    return (
+      <section className="mt-20 flex flex-col items-center justify-center gap-1 font-semibold text-primary-focus">
+        <span className="loading loading-dots loading-lg text-primary"></span>
+        در حال دریافت اطلاعات نمودارها
+      </section>
+    );
+  }
 
-      setData({
-        view: postStat?.value?.view,
-        share: postStat?.value?.share,
-        created_at: postStat?.value?.date,
-      });
-      setLoading(false);
-    } catch (err) {
-      console.log(err);
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchStat();
-
-    return () => {
-      setLoading(false);
-      setSignal(true);
-    };
-  }, []);
-
-  useEffect(() => {
-    fetchStat();
-
-    return () => {
-      setLoading(false);
-      setSignal(true);
-    };
-  }, [channelId]);
+  if (error) {
+    return (
+      <section className="mt-20 flex flex-col items-center justify-center gap-1 font-semibold text-primary-focus">
+        <p>مشکلی پیش آمده است</p>
+      </section>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-10">

@@ -11,40 +11,27 @@ import { IChannelData } from "../../../../types";
 import { getProfile, updateApiInfo } from "../../../../apis";
 import { useAxiosPrivate } from "../../../../hooks";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
 
 interface IAddApiInfoProps {
   step: number;
   setStep: Dispatch<SetStateAction<number>>;
 }
 
-// interface IErrorResponseAddChannel {
-//   status: boolean;
-//   message: { [key: string]: string }[];
-// }
-
 const AddApiInfo = ({ step, setStep }: IAddApiInfoProps): JSX.Element => {
-  // const [loading, setLoading] = useState(false);
-  // const [errorFetch, setErrorFetch] = useState<IErrorResponseAddChannel>({
-  //   status: false,
-  //   message: [],
-  // });
   const [inputData, setInputData] = useState<IChannelData>({
     apiId: "",
     apiHash: "",
   });
-  // const axiosPrivate = useApiPrivate();
-  // const navigate = useNavigate();
-  // const { controller, setSignal } = useAbortController(false);
   const {
     response: responseProfile,
-    // fetchData,
+    error: errorProfile,
     loading: loadingProfile,
   } = useAxiosPrivate(getProfile());
   const {
     fetchData: updateInfo,
     loading: loadingUpdate,
     response: responseUpdate,
+    error: errorUpdate,
   } = useAxiosPrivate(updateApiInfo(inputData));
 
   useEffect(() => {
@@ -53,11 +40,14 @@ const AddApiInfo = ({ step, setStep }: IAddApiInfoProps): JSX.Element => {
         setStep(3);
       }
     }
+  }, [responseProfile]);
+
+  useEffect(() => {
     if (responseUpdate !== null) {
       setStep(3);
       toast.success("اطلاعات با موفقیت ثبت شد!");
     }
-  }, []);
+  }, [responseUpdate]);
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     setInputData({
@@ -77,6 +67,14 @@ const AddApiInfo = ({ step, setStep }: IAddApiInfoProps): JSX.Element => {
       <section className="mt-20 flex flex-col items-center justify-center gap-1 font-semibold text-primary-focus">
         <span className="loading loading-dots loading-lg text-primary"></span>
         در حال بررسی اطلاعات کاربری
+      </section>
+    );
+  }
+
+  if (errorUpdate || errorProfile) {
+    return (
+      <section className="mt-20 flex flex-col items-center justify-center gap-1 font-semibold text-primary-focus">
+        مشکلی پیش آمده است
       </section>
     );
   }
@@ -135,13 +133,14 @@ const AddApiInfo = ({ step, setStep }: IAddApiInfoProps): JSX.Element => {
               loadingUpdate ? "btn-disabled" : ""
             }`}
           >
-            ثبت
             {loadingUpdate ? (
               <div>
                 <span className="loading loading-spinner loading-md"></span>
                 در حال بروز رسانی اطلاعات
               </div>
-            ) : null}
+            ) : (
+              <>ثبت</>
+            )}
           </button>
         </div>
       </form>

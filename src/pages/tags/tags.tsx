@@ -1,6 +1,6 @@
 import { JSX, useContext, useEffect, useState } from "react";
 import { getChannels, getTags } from "../../apis";
-import { useAbortController, useApiPrivate } from "../../hooks";
+import { useAxiosPrivate } from "../../hooks";
 import AuthContext from "../../context/auth-provider";
 import { CardList, FilterInput, Pagination } from "../../components";
 import { useSearchParams } from "react-router-dom";
@@ -11,15 +11,13 @@ interface ITags {
   channelId: number;
 }
 
-// tagName filter in backend should be implemented
-// G
 const Tags = (): JSX.Element => {
-  const [loading, setLoading] = useState(false);
-  const axiosPrivate = useApiPrivate();
   const { auth } = useContext(AuthContext);
-  const { controller, setSignal } = useAbortController(false);
+  const { loading: loadingTags, response: responseTags } = useAxiosPrivate(
+    getTags(parseInt(auth.userId))
+  );
   const [tags, setTags] = useState<ITags[]>([]);
-  const [searchParams, setSearchParams] = useSearchParams({});
+  const [searchParams] = useSearchParams({});
   const [selectedTag, setSelectedTag] = useState(
     searchParams.get("tagName") ?? ""
   );
@@ -30,74 +28,26 @@ const Tags = (): JSX.Element => {
   });
   const [filter, setFilter] = useState(searchParams.get("filter") ?? "");
   const [channels, setChannels] = useState<IChannel[]>([]);
-
-  const fetchTags = async () => {
-    try {
-      setLoading(true);
-      const { data } = await getTags(
-        axiosPrivate,
-        parseInt(auth.userId),
-        controller
-      );
-      // console.log("data :>> ", data);
-      setTags(data?.value);
-      // setChannels(data.value?.data);
-      setLoading(false);
-    } catch (err) {
-      console.log(err);
-      setLoading(false);
-    }
-  };
+  const {
+    loading: loadingChannels,
+    error: errorChannels,
+    response: responseChannels,
+    fetchData: fetchChannels,
+  } = useAxiosPrivate({
+    ...getChannels(
+      pageInfo.currentPage,
+      parseInt(auth.userId, 10),
+      filter,
+      selectedTag
+    ),
+    runOnMount: false,
+  });
 
   useEffect(() => {
-    fetchTags();
-
-    return () => {
-      setLoading(false);
-      setSignal(true);
-    };
-  }, []);
-
-  const fetchChannels = async () => {
-    try {
-      setSearchParams({
-        tagName: selectedTag,
-        filter,
-        page: pageInfo.currentPage.toString(),
-      });
-      // if (filter !== "0") {
-      //   setSearchParams({
-      //     filter: filter,
-      //     page: pageInfo.currentPage.toString(),
-      //   });
-      // } else {
-      //   setSearchParams({
-      //     page: pageInfo.currentPage.toString(),
-      //   });
-      // }
-      setLoading(true);
-      const { data } = await getChannels(
-        axiosPrivate,
-        pageInfo.currentPage,
-        parseInt(auth.userId),
-        filter,
-        selectedTag,
-        controller
-      );
-      // console.log("data :>> ", data);
-      setPageInfo({
-        ...pageInfo,
-        pageSize: data.value?.per_page,
-        totalCount: data.value?.total,
-        currentPage: data.value?.current_page,
-      });
-      setChannels(data.value?.data);
-      setLoading(false);
-    } catch (err) {
-      console.log(err);
-      setLoading(false);
+    if (responseTags !== null) {
+      setTags(responseTags?.value);
     }
-  };
+  }, [responseTags]);
 
   useEffect(() => {
     document.documentElement.scrollIntoView({
@@ -108,8 +58,33 @@ const Tags = (): JSX.Element => {
     fetchChannels();
   }, [selectedTag, pageInfo.currentPage]);
 
-  if (loading) {
-    return <p className="loading loading-spinner loading-lg"></p>;
+  useEffect(() => {
+    if (responseChannels !== null) {
+      setChannels(responseChannels?.value?.data);
+      setPageInfo({
+        ...pageInfo,
+        pageSize: responseChannels.value?.per_page,
+        totalCount: responseChannels.value?.total,
+        currentPage: responseChannels.value?.current_page,
+      });
+    }
+  }, [responseChannels]);
+
+  if (loadingTags) {
+    return (
+      <section className="mt-20 flex flex-col items-center justify-center gap-1 font-semibold text-primary-focus">
+        <span className="loading loading-dots loading-lg text-primary"></span>
+        در حال دریافت تگ‌ها
+      </section>
+    );
+  }
+
+  if (errorChannels) {
+    return (
+      <section className="mt-20 flex flex-col items-center justify-center gap-1 font-semibold text-primary-focus">
+        <p>مشکلی پیش آمده است</p>
+      </section>
+    );
   }
 
   if (tags.length > 0) {
@@ -120,11 +95,6 @@ const Tags = (): JSX.Element => {
             <li
               onClick={(e) => {
                 setSelectedTag("");
-                setSearchParams({
-                  filter,
-                  tagName: "",
-                  page: pageInfo.currentPage.toString(),
-                });
                 (e.target as HTMLLinkElement).scrollIntoView({
                   behavior: "smooth",
                   inline: "center",
@@ -147,11 +117,6 @@ const Tags = (): JSX.Element => {
                   onClick={(e) => {
                     const tagSelected = t.replace("#", "");
                     setSelectedTag(tagSelected);
-                    setSearchParams({
-                      filter,
-                      tagName: tagSelected,
-                      page: pageInfo.currentPage.toString(),
-                    });
                     (e.target as HTMLLinkElement).scrollIntoView({
                       behavior: "smooth",
                       inline: "center",
@@ -176,7 +141,14 @@ const Tags = (): JSX.Element => {
           setFilter={setFilter}
           getInfo={fetchChannels}
         />
-        <CardList list={channels} />
+        {loadingChannels ? (
+          <section className="mt-20 flex flex-col items-center justify-center gap-1 font-semibold text-primary-focus">
+            <span className="loading loading-dots loading-lg text-primary"></span>
+            در حال دریافت کانال‌ها
+          </section>
+        ) : (
+          <CardList list={channels} />
+        )}
         <Pagination
           currentPage={pageInfo.currentPage}
           totalCount={pageInfo.totalCount}
@@ -191,35 +163,5 @@ const Tags = (): JSX.Element => {
   }
   return <div>تگی وجود ندارد</div>;
 };
-
-/* {tags?.length > 0
-                    ? tags.map((tag) => (
-                          <li
-                              onClick={(e) => {
-                                  showRelatedTag(tag.id);
-                                  e.target.scrollIntoView({
-                                      behavior: "smooth",
-                                      inline: "center",
-                                      block: "start",
-                                  });
-                              }}
-                              className={`snap-center py-4 px-2 grid items-center justify-center cursor-pointer rounded text-xs lg:text-sm active:bg-COLOR_GREEN active:bg-opacity-20 transition-all duration-200 ease-linear ${
-                                  true === true
-                                      ? "text-COLOR_RED_LIGHT font-bold scale-125"
-                                      : "text-COLOR_BLUE_LIGHT"
-                              }`}
-                              key={tag.id}
-                          >
-                              {tag.text}
-                          </li>
-                      ))
-                    : null}
-                <li
-                    className="active:bg-COLOR_GREEN active:bg-opacity-20 transition-all duration-200 ease-linear py-4 px-2 cursor-pointer grid items-center justify-center"
-                    onClick={() => showRelatedTag("")}
-                >
-                    <BsArrowCounterclockwise className="w-5 h-5 text-COLOR_YELLOW cursor-pointer" />
-                    {/* icon */
-/* </li> */
 
 export default Tags;

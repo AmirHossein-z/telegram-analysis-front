@@ -10,30 +10,41 @@ import {
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../../assets/logo.svg";
 import { RiLockPasswordFill } from "react-icons/ri";
-import { IInputData, IErrorResponseLogin } from "../../types";
+import { IInputData } from "../../types";
 import { authUser } from "../../apis";
 import AuthContext from "../../context/auth-provider";
 import { toast } from "react-toastify";
+import { useAxiosPrivate } from "../../hooks";
 
 const Login = (): JSX.Element => {
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/dashboard";
   const { setAuth } = useContext(AuthContext);
-
   const [inputData, setInputData] = useState<IInputData>({
     email: "",
     password: "",
   });
-  const [loading, setLoading] = useState<boolean>(false);
-  const [errorFetch, setErrorFetch] = useState<IErrorResponseLogin>({
-    status: false,
-    message: "",
-  });
+  const {
+    loading,
+    error,
+    fetchData: authSubmit,
+    response,
+  } = useAxiosPrivate(authUser(inputData));
   const emailRef = useRef<HTMLInputElement | null>(null);
+
   useEffect(() => {
     emailRef.current?.focus();
   }, []);
+
+  useEffect(() => {
+    if (response !== null) {
+      const accessToken = response?.access_token?.original?.access_token;
+      setAuth({ accessToken: accessToken, userId: response?.user.id });
+      setInputData({ email: "", password: "" });
+      navigate(from, { replace: true });
+    }
+  }, [response]);
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     setInputData({ ...inputData, [e.target.name]: e.target.value });
@@ -41,54 +52,13 @@ const Login = (): JSX.Element => {
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault();
-    try {
-      setLoading(true);
-      setErrorFetch({
-        ...errorFetch,
-        status: false,
-        message: "",
-      });
-      const { data: userData } = await authUser(inputData);
-      setLoading(false);
-      setInputData({ email: "", password: "" });
-      const accessToken = userData?.access_token?.original?.access_token;
-      setAuth({ accessToken: accessToken, userId: userData?.user.id });
-      navigate(from, { replace: true });
-    } catch (error: any) {
-      setLoading(false);
-      if (error?.response?.status === 400 || error?.response?.status === 401) {
-        setErrorFetch({
-          ...errorFetch,
-          status: true,
-          message: error.response.data.message ?? "",
-        });
-      }
-      //   if (!error.response) {
-      //     setErrorFetch({
-      //       ...errorFetch,
-      //       status: true,
-      //       message: "No server response",
-      //     });
-      //   } else if (error?.response?.status === 401) {
-      //     setErrorFetch({
-      //       ...errorFetch,
-      //       status: true,
-      //       message: "Unauthorized",
-      //     });
-      //   } else {
-      //     setErrorFetch({
-      //       ...errorFetch,
-      //       status: true,
-      //       message: "Login failed",
-      //     });
-      //   }
-    }
+    await authSubmit();
   };
 
-  if (errorFetch.status) {
-    toast.error(errorFetch.message);
-    setErrorFetch({ status: false, message: "" });
+  if (error) {
+    toast.error("مقادیر را درست وارد نکرده‌اید");
   }
+
   return (
     <main>
       <section className="h-full w-full">
@@ -155,6 +125,7 @@ const Login = (): JSX.Element => {
                 className={`btn-secondary btn-outline btn-wide btn text-base focus:outline-secondary-focus ${
                   loading ? "btn-disabled" : ""
                 }`}
+                disabled={loading}
               >
                 ورود
                 {loading ? (
