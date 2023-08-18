@@ -3,7 +3,6 @@ import { axiosPrivate } from "../apis";
 import { AxiosResponse } from "axios";
 import { IAxiosPrivate } from "../types";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import { toast } from "react-toastify";
 import AuthContext from "../context/auth-provider";
 
 const useAxiosPrivate = (props: IAxiosPrivate) => {
@@ -119,6 +118,7 @@ const useAxiosPrivate = (props: IAxiosPrivate) => {
   return {
     response,
     error,
+    setError,
     loading,
     controller: controller.current,
     fetchData,

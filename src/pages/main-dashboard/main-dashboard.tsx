@@ -65,13 +65,13 @@ const MainDashboard = () => {
   else if (channels?.length > 0) {
     return (
       <>
-        <StatContainer>
+        {/* <StatContainer>
           <Stat
             title="تعداد کانال ها"
             value={channels.length}
             icon={<AiFillEye />}
           />
-        </StatContainer>
+        </StatContainer> */}
         <h1 className="my-2 text-center text-lg text-secondary">
           لیست کانال های شما
         </h1>

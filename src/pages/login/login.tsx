@@ -28,6 +28,7 @@ const Login = (): JSX.Element => {
   const {
     loading,
     error,
+    setError,
     fetchData: authSubmit,
     response,
   } = useAxiosPrivate(authUser(inputData));
@@ -57,6 +58,7 @@ const Login = (): JSX.Element => {
 
   if (error) {
     toast.error("مقادیر را درست وارد نکرده‌اید");
+    setError("");
   }
 
   return (

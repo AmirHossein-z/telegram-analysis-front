@@ -56,6 +56,7 @@ const Register = (): JSX.Element => {
 
   if (error) {
     toast.error("مقادیر را درست وارد نکرده‌اید");
+    setError("");
   }
 
   return (
